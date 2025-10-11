@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackIt - Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>Progress Dashboard</h1>
+        </div>
+    </header>
+
+    <main class="analytics-page">
+        <div class="chart-section">
+            <h2>Weekly Progress</h2>
+            <div id="weekly-chart" class="chart">
+                <!-- Weekly chart will be rendered here -->
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <h2>Monthly Trends</h2>
+            <div id="monthly-chart" class="chart">
+                <canvas id="monthly-canvas"></canvas>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h2>Completion Summary</h2>
+            <div id="summary-container">
+                <!-- Summary stats will be rendered here -->
+            </div>
+        </div>
+
+        <div class="motivation-section">
+            <h2>Motivation</h2>
+            <div class="quote-container">
+                <p id="motivation-quote"></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 TrackIt</p>
+        <div class="footer-links">
+            <a href="settings.html">Settings </a>
+            <a href="about.html">About </a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

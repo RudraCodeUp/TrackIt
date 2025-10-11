@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackIt - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>TrackIt watch icon</h1>
+        </div>
+        <div class="header-controls">
+            <label class="theme-switch" aria-label="Toggle theme">
+                <input type="checkbox" id="theme-toggle" role="switch" aria-checked="false">
+                <span class="slider">
+                    <span class="icon moon">night</span>
+                    <span class="icon sun">light</span>
+                </span>
+            </label>
+            <a href="analytics.html" class="btn">Analytics</a>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="action-bar">
+            <a href="manage.html" class="btn primary-btn">+ Add Habit</a>
+        </div>
+
+        <div id="habits-container" class="habits-grid">
+            <!-- Habits will be populated here by JavaScript -->
+            <div class="empty-state hidden">
+                <p>No habits added yet. Click "Add Habit" to get started!</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 TrackIt</p>
+        <div class="footer-links">
+            <a href="settings.html">Settings</a>
+            <a href="about.html">About </a>
+        </div>
+    </footer>
+
+    <!-- Template for habit cards -->
+    <template id="habit-card-template">
+        <div class="habit-card">
+            <h3 class="habit-name"></h3>
+            <div class="habit-status">
+                <label class="checkbox-container">
+                    <input type="checkbox" class="today-checkbox">
+                    <span class="checkmark"></span>
+                    <span>Today Done</span>
+                </label>
+                <div class="streak">fire icon will come <span class="streak-count">0</span>-day streak</div>
+            </div>
+            <div class="week-tracker">
+                <div class="day-labels">
+                    <span>M</span>
+                    <span>T</span>
+                    <span>W</span>
+                    <span>T</span>
+                    <span>F</span>
+                    <span>S</span>
+                    <span>S</span>
+                </div>
+                <div class="day-dots"></div>
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>

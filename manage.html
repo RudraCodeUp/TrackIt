@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackIt - Manage Habits</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="page-header">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>Add / Manage Habits</h1>
+        </div>
+    </header>
+
+    <main class="manage-page">
+        <div class="add-form">
+            <input type="text" id="new-habit-input" placeholder="Enter habit name...">
+            <button id="add-new-habit-btn" class="primary-btn">Add </button>
+        </div>
+
+        <div class="habits-section">
+            <h2>Your Habits</h2>
+            <div id="habits-list">
+                <!-- Habits list for editing/deleting will be populated here -->
+                <div class="empty-state hidden">
+                    <p>No habits added yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="danger-zone">
+            <button id="reset-all-btn" class="danger-btn">Reset All Habits </button>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 TrackIt</p>
+        <div class="footer-links">
+            <a href="settings.html">Settings </a>
+            <a href="about.html">About </a>
+        </div>
+    </footer>
+
+    <!-- Template for editable habit items -->
+    <template id="habit-item-template">
+        <div class="habit-item">
+            <span class="habit-name"></span>
+            <div class="habit-actions">
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Confirmation modal template -->
+    <div id="confirmation-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Are you sure?</h3>
+            <p id="modal-message">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn">Cancel</button>
+                <button id="modal-confirm" class="danger-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
