@@ -1,0 +1,507 @@
+:root {
+    /* Light theme (default) */
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --accent: #4361ee;
+    --accent-light: #4895ef;
+    --border: #dee2e6;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --card-bg: #ffffff;
+}
+
+.dark-theme {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --accent: #4895ef;
+    --accent-light: #4cc9f0;
+    --border: #333;
+    --shadow: rgba(255, 255, 255, 0.05);
+    --card-bg: #252525;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 70px; /* Space for footer */
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem;
+}
+
+h1 {
+    font-size: 1.8rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+h3 {
+    font-size: 1.2rem;
+}
+
+/* Layout */
+header {
+    background-color: var(--bg-secondary);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    margin-bottom: 1rem;
+}
+
+header .logo h1 {
+    margin: 0;
+    color: var(--accent);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+main {
+    flex: 1;
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+footer {
+    background-color: var(--bg-secondary);
+    padding: 1rem 2rem;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 5px var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Header Layouts */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Buttons & Links */
+.btn, button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
+    font-family: inherit;
+    display: inline-block;
+}
+
+.btn:hover, button:hover {
+    background-color: var(--accent-light);
+    transform: translateY(-1px);
+}
+
+.primary-btn {
+    font-weight: bold;
+}
+
+.danger-btn {
+    background-color: var(--danger);
+}
+
+.danger-btn:hover {
+    background-color: #dc2626;
+}
+
+.back-btn {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+#theme-toggle {
+    background: transparent;
+    color: var(--text-primary);
+    padding: 0.3rem;
+    font-size: 1.2rem;
+}
+
+/* Dashboard Page */
+.action-bar {
+    margin: 1rem 0;
+}
+
+.habits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.habit-card {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    transition: transform 0.2s;
+}
+
+.habit-card:hover {
+    transform: translateY(-2px);
+}
+
+.habit-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.8rem 0;
+}
+
+.streak {
+    color: var(--warning);
+    font-weight: 500;
+}
+
+/* Custom Checkbox */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    height: 20px;
+    width: 20px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+.checkbox-container:hover .checkmark {
+    background-color: var(--border);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Week Tracker */
+.week-tracker {
+    margin-top: 0.8rem;
+}
+
+.day-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.day-dots {
+    display: flex;
+    justify-content: space-between;
+}
+
+.day-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--border);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.day-dot.completed {
+    background-color: var(--success);
+}
+
+/* Manage Habits Page */
+.add-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+#new-habit-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: inherit;
+}
+
+.habits-section {
+    margin-bottom: 2rem;
+}
+
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--card-bg);
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.habit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.habit-item .edit-btn, .habit-item .delete-btn {
+    padding: 0.3rem 0.6rem;
+}
+
+.danger-zone {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+/* Analytics Page */
+.chart-section {
+    margin-bottom: 2rem;
+}
+
+.chart {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    height: 200px;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+/* Bar Chart */
+.bar-chart {
+    display: flex;
+    height: 100%;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.chart-bar-container {
+    width: 100%;
+    height: 85%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.chart-bar {
+    width: 60%;
+    background-color: var(--accent);
+    transition: height 0.5s;
+}
+
+.chart-label {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Line Chart */
+#monthly-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.summary-section {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.quote-container {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    text-align: center;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+/* Settings Page */
+.settings-section {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.theme-options, .data-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 0.8rem;
+}
+
+/* About Page */
+.about-section {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.about-section h2 {
+    margin-top: 0;
+}
+
+.about-section ul, .about-section ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px var(--shadow);
+    max-width: 90%;
+    width: 400px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    grid-column: 1 / -1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header, main, footer {
+        padding: 1rem;
+    }
+
+    .habits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-options, .data-options {
+        flex-direction: column;
+    }
+
+    .habit-status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
