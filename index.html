@@ -6,42 +6,45 @@
     <title>TrackIt - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
     <header>
         <div class="logo">
-            <h1>TrackIt watch icon</h1>
+            <h1><span class="material-icons-round">schedule</span> TrackIt</h1>
         </div>
         <div class="header-controls">
             <label class="theme-switch" aria-label="Toggle theme">
                 <input type="checkbox" id="theme-toggle" role="switch" aria-checked="false">
                 <span class="slider">
-                    <span class="icon moon">night</span>
-                    <span class="icon sun">light</span>
+                    <span class="icon moon"><span class="material-icons-round">dark_mode</span></span>
+                    <span class="icon sun"><span class="material-icons-round">light_mode</span></span>
                 </span>
             </label>
-            <a href="analytics.html" class="btn">Analytics</a>
+            <a href="analytics.html" class="btn"><span class="material-icons-round">analytics</span> Analytics</a>
         </div>
     </header>
 
     <main class="dashboard">
         <div class="action-bar">
-            <a href="manage.html" class="btn primary-btn">+ Add Habit</a>
+            <a href="manage.html" class="btn primary-btn"><span class="material-icons-round">add</span> Add Habit</a>
         </div>
 
         <div id="habits-container" class="habits-grid">
             <!-- Habits will be populated here by JavaScript -->
-            <div class="empty-state hidden">
-                <p>No habits added yet. Click "Add Habit" to get started!</p>
-            </div>
+        </div>
+        
+        <div class="empty-state" id="empty-state-message">
+            <div class="empty-icon"><span class="material-icons-round">lightbulb</span></div>
+            <p>No habits added yet. Click "Add Habit" to get started!</p>
         </div>
     </main>
 
     <footer>
         <p>© 2025 TrackIt</p>
         <div class="footer-links">
-            <a href="settings.html">Settings</a>
-            <a href="about.html">About </a>
+            <a href="settings.html"><span class="material-icons-round">settings</span> Settings</a>
+            <a href="about.html"><span class="material-icons-round">info</span> About</a>
         </div>
     </footer>
 
@@ -55,7 +58,7 @@
                     <span class="checkmark"></span>
                     <span>Today Done</span>
                 </label>
-                <div class="streak">fire icon will come <span class="streak-count">0</span>-day streak</div>
+                <div class="streak"><span class="material-icons-round">local_fire_department</span> <span class="streak-count">0</span>-day streak</div>
             </div>
             <div class="week-tracker">
                 <div class="day-labels">

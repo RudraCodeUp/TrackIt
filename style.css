@@ -6,12 +6,14 @@
     --text-secondary: #6c757d;
     --accent: #4361ee;
     --accent-light: #4895ef;
+    --accent-hover: #3a56d4;
     --border: #dee2e6;
     --shadow: rgba(0, 0, 0, 0.1);
     --success: #10b981;
     --danger: #ef4444;
     --warning: #f59e0b;
     --card-bg: #ffffff;
+    --hover-bg: #f1f3f9;
 }
 
 .dark-theme {
@@ -21,9 +23,11 @@
     --text-secondary: #adb5bd;
     --accent: #4895ef;
     --accent-light: #4cc9f0;
+    --accent-hover: #3d7ac0;
     --border: #333;
     --shadow: rgba(255, 255, 255, 0.05);
     --card-bg: #252525;
+    --hover-bg: #2a2a2a;
 }
 
 * {
@@ -48,10 +52,14 @@ body {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 h1 {
     font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 h2 {
@@ -63,11 +71,18 @@ h3 {
     font-size: 1.2rem;
 }
 
+/* Material Icons */
+.material-icons-round {
+    font-size: inherit;
+    line-height: 1;
+    vertical-align: middle;
+}
+
 /* Layout */
 header {
     background-color: var(--bg-secondary);
     padding: 1rem 2rem;
-    box-shadow: 0 2px 5px var(--shadow);
+    box-shadow: 0 2px 10px var(--shadow);
     margin-bottom: 1rem;
 }
 
@@ -104,7 +119,20 @@ footer {
 
 .footer-links {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
 }
 
 /* Header Layouts */
@@ -120,28 +148,107 @@ header {
     gap: 1rem;
 }
 
+/* Theme Switch */
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--text-secondary);
+    transition: .4s;
+    border-radius: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+input:checked + .slider {
+    background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+.icon {
+    color: white;
+    font-size: 14px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sun {
+    margin-right: 8px;
+}
+
+.moon {
+    margin-left: 8px;
+}
+
 /* Buttons & Links */
 .btn, button {
     background-color: var(--accent);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: all 0.2s;
     text-decoration: none;
     font-family: inherit;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px var(--shadow);
 }
 
 .btn:hover, button:hover {
-    background-color: var(--accent-light);
-    transform: translateY(-1px);
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+.btn:active, button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px var(--shadow);
 }
 
 .primary-btn {
-    font-weight: bold;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
 }
 
 .danger-btn {
@@ -158,49 +265,63 @@ header {
     font-weight: 500;
     display: flex;
     align-items: center;
+    gap: 4px;
+    background: transparent;
+    box-shadow: none;
 }
 
-#theme-toggle {
+.back-btn:hover {
+    color: var(--accent);
     background: transparent;
-    color: var(--text-primary);
-    padding: 0.3rem;
-    font-size: 1.2rem;
+    transform: translateX(-3px);
+    box-shadow: none;
 }
 
 /* Dashboard Page */
 .action-bar {
-    margin: 1rem 0;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .habits-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
+    gap: 1.2rem;
     margin-top: 1rem;
 }
 
 .habit-card {
     background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 2px 5px var(--shadow);
-    transition: transform 0.2s;
+    border-radius: 0.8rem;
+    padding: 1.2rem;
+    box-shadow: 0 3px 10px var(--shadow);
+    transition: all 0.3s;
+    border-left: 4px solid var(--accent);
 }
 
 .habit-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px var(--shadow);
 }
 
 .habit-status {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0.8rem 0;
+    margin: 1rem 0;
 }
 
 .streak {
     color: var(--warning);
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.streak .material-icons-round {
+    font-size: 1.2rem;
 }
 
 /* Custom Checkbox */
@@ -219,16 +340,20 @@ header {
 }
 
 .checkmark {
-    height: 20px;
-    width: 20px;
+    height: 22px;
+    width: 22px;
     background-color: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
     margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
 .checkbox-container:hover .checkmark {
-    background-color: var(--border);
+    border-color: var(--accent);
 }
 
 .checkbox-container input:checked ~ .checkmark {
@@ -240,31 +365,29 @@ header {
     content: "";
     position: absolute;
     display: none;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-bottom: 2px;
 }
 
 .checkbox-container input:checked ~ .checkmark:after {
     display: block;
 }
 
-.checkbox-container .checkmark:after {
-    left: 7px;
-    top: 3px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
 /* Week Tracker */
 .week-tracker {
     margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
 }
 
 .day-labels {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-size: 0.8rem;
     color: var(--text-secondary);
 }
@@ -275,17 +398,64 @@ header {
 }
 
 .day-dot {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background-color: var(--border);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.day-dot:hover {
+    transform: scale(1.2);
 }
 
 .day-dot.completed {
     background-color: var(--success);
 }
+
+.day-dot::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.day-dot:hover::before {
+    border-color: var(--accent-light);
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 3rem;
+    background-color: var(--card-bg);
+    border-radius: 0.8rem;
+    box-shadow: 0 3px 10px var(--shadow);
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    color: var(--accent-light);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Add more styles for other pages as needed */
 
 /* Manage Habits Page */
 .add-form {
@@ -296,12 +466,20 @@ header {
 
 #new-habit-input {
     flex: 1;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 0.25rem;
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     font-family: inherit;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+#new-habit-input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
 }
 
 .habits-section {
@@ -316,7 +494,12 @@ header {
     border-bottom: 1px solid var(--border);
     background-color: var(--card-bg);
     margin-bottom: 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.habit-item:hover {
+    background-color: var(--hover-bg);
 }
 
 .habit-actions {
@@ -324,165 +507,17 @@ header {
     gap: 0.5rem;
 }
 
-.habit-item .edit-btn, .habit-item .delete-btn {
-    padding: 0.3rem 0.6rem;
+.habit-actions button {
+    padding: 0.4rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .danger-zone {
     margin-top: 2rem;
     padding-top: 1rem;
     border-top: 1px solid var(--border);
-}
-
-/* Analytics Page */
-.chart-section {
-    margin-bottom: 2rem;
-}
-
-.chart {
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 2px 5px var(--shadow);
-    height: 200px;
-    margin-top: 0.5rem;
-    position: relative;
-}
-
-/* Bar Chart */
-.bar-chart {
-    display: flex;
-    height: 100%;
-    align-items: flex-end;
-    justify-content: space-between;
-}
-
-.chart-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-}
-
-.chart-bar-container {
-    width: 100%;
-    height: 85%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.chart-bar {
-    width: 60%;
-    background-color: var(--accent);
-    transition: height 0.5s;
-}
-
-.chart-label {
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-/* Line Chart */
-#monthly-canvas {
-    width: 100%;
-    height: 100%;
-}
-
-.summary-section {
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 2px 5px var(--shadow);
-    margin-bottom: 1.5rem;
-}
-
-.quote-container {
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 2px 5px var(--shadow);
-    text-align: center;
-    font-style: italic;
-    color: var(--text-secondary);
-}
-
-/* Settings Page */
-.settings-section {
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 2px 5px var(--shadow);
-    margin-bottom: 1.5rem;
-}
-
-.theme-options, .data-options {
-    display: flex;
-    gap: 10px;
-    margin-top: 0.8rem;
-}
-
-/* About Page */
-.about-section {
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    box-shadow: 0 2px 5px var(--shadow);
-    margin-bottom: 1.5rem;
-}
-
-.about-section h2 {
-    margin-top: 0;
-}
-
-.about-section ul, .about-section ol {
-    padding-left: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-/* Modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: var(--card-bg);
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px var(--shadow);
-    max-width: 90%;
-    width: 400px;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-}
-
-/* Utility Classes */
-.hidden {
-    display: none;
-}
-
-.empty-state {
-    text-align: center;
-    color: var(--text-secondary);
-    padding: 2rem;
-    background-color: var(--card-bg);
-    border-radius: 0.5rem;
-    grid-column: 1 / -1;
 }
 
 /* Responsive Design */
@@ -502,6 +537,14 @@ header {
     .habit-status {
         flex-direction: column;
         align-items: flex-start;
-        gap: 5px;
+        gap: 10px;
+    }
+    
+    .header-controls {
+        gap: 0.5rem;
+    }
+    
+    .btn {
+        padding: 0.4rem 0.8rem;
     }
 }
