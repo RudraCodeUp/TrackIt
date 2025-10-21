@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Add Font Awesome for better icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- App Wrapper -->
@@ -15,7 +17,7 @@
         <nav class="top-navbar" id="top-navbar">
             <div class="navbar-left">
                 <div class="logo">
-                    <span class="material-icons-round logo-icon">track_changes</span>
+                    <i class="fas fa-chart-line logo-icon"></i>
                     <h1>TrackIt</h1>
                 </div>
             </div>
@@ -23,23 +25,23 @@
             <div class="navbar-center">
                 <div class="navbar-menu" id="navbar-menu">
                     <a href="index.html" class="menu-item active">
-                        <span class="material-icons-round">dashboard</span>
+                        <i class="fas fa-home"></i>
                         <span class="menu-text">Dashboard</span>
                     </a>
                     <a href="manage.html" class="menu-item">
-                        <span class="material-icons-round">playlist_add_check</span>
+                        <i class="fas fa-tasks"></i>
                         <span class="menu-text">Manage</span>
                     </a>
                     <a href="analytics.html" class="menu-item">
-                        <span class="material-icons-round">insights</span>
+                        <i class="fas fa-chart-bar"></i>
                         <span class="menu-text">Analytics</span>
                     </a>
                     <a href="settings.html" class="menu-item">
-                        <span class="material-icons-round">settings</span>
+                        <i class="fas fa-cog"></i>
                         <span class="menu-text">Settings</span>
                     </a>
                     <a href="about.html" class="menu-item">
-                        <span class="material-icons-round">help_outline</span>
+                        <i class="fas fa-question-circle"></i>
                         <span class="menu-text">About</span>
                     </a>
                 </div>
@@ -50,13 +52,13 @@
                     <label class="theme-switch" for="theme-toggle">
                         <input type="checkbox" id="theme-toggle">
                         <div class="slider round">
-                            <span class="material-icons-round sun-icon">light_mode</span>
-                            <span class="material-icons-round moon-icon">dark_mode</span>
+                            <i class="fas fa-sun sun-icon"></i>
+                            <i class="fas fa-moon moon-icon"></i>
                         </div>
                     </label>
                 </div>
                 <button id="mobile-menu-toggle" class="mobile-menu-toggle">
-                    <span class="material-icons-round">menu</span>
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
         </nav>
@@ -71,7 +73,7 @@
                 <div class="header-actions">
                     <div class="dropdown">
                         <button id="dropdown-toggle" class="btn btn-outline btn-with-icon">
-                            <span class="material-icons-round">filter_list</span>
+                            <i class="fas fa-filter"></i>
                             <span id="filter-text">All Habits</span>
                         </button>
                         <div class="dropdown-menu" id="dropdown-menu">
@@ -81,8 +83,8 @@
                         </div>
                     </div>
                     <button id="quick-add" class="btn btn-primary btn-with-icon">
-                        <span class="material-icons-round">add</span>
-                        <span>Add Habit</span>
+                        <i class="fas fa-plus"></i>
+                        <span>Quick Add</span>
                     </button>
                 </div>
             </header>
@@ -90,7 +92,7 @@
             <div class="dashboard-stats">
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <span class="material-icons-round">checklist</span>
+                        <i class="fas fa-list"></i>
                     </div>
                     <div class="stat-content">
                         <h3 id="total-habits">0</h3>
@@ -99,7 +101,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <span class="material-icons-round">local_fire_department</span>
+                        <i class="fas fa-fire"></i>
                     </div>
                     <div class="stat-content">
                         <h3 id="current-streak">0</h3>
@@ -108,7 +110,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <span class="material-icons-round">bar_chart</span>
+                        <i class="fas fa-chart-pie"></i>
                     </div>
                     <div class="stat-content">
                         <h3 id="completion-rate">0%</h3>
@@ -118,17 +120,17 @@
             </div>
 
             <section class="habits-section">
-                <div id="habits-container" class="habits-container">
+                <div id="habits-container" class="habits-grid">
                     <!-- Habits will be inserted here -->
                 </div>
                 <div id="empty-state-message" class="empty-state">
                     <div class="empty-icon">
-                        <span class="material-icons-round">playlist_add</span>
+                        <i class="fas fa-clipboard-list fa-3x"></i>
                     </div>
                     <h3>No habits yet</h3>
                     <p>Start tracking your habits by adding your first one.</p>
                     <button id="empty-add-btn" class="btn btn-primary btn-lg">
-                        <span class="material-icons-round">add</span>
+                        <i class="fas fa-plus"></i>
                         <span>Add Your First Habit</span>
                     </button>
                 </div>
@@ -142,7 +144,7 @@
             <div class="modal-header">
                 <h3>Add New Habit</h3>
                 <button id="close-modal" class="btn-close">
-                    <span class="material-icons-round">close</span>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
@@ -159,6 +161,18 @@
                         <option value="self-care">Self Care</option>
                         <option value="learning">Learning</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Track on these days</label>
+                    <div class="weekday-selector">
+                        <button class="weekday-btn active" data-day="1">Mon</button>
+                        <button class="weekday-btn active" data-day="2">Tue</button>
+                        <button class="weekday-btn active" data-day="3">Wed</button>
+                        <button class="weekday-btn active" data-day="4">Thu</button>
+                        <button class="weekday-btn active" data-day="5">Fri</button>
+                        <button class="weekday-btn active" data-day="6">Sat</button>
+                        <button class="weekday-btn active" data-day="0">Sun</button>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -181,7 +195,7 @@
             <h3 class="habit-name"></h3>
             <div class="habit-status">
                 <div class="status-icon">
-                    <span class="material-icons-round">local_fire_department</span>
+                    <i class="fas fa-fire"></i>
                 </div>
                 <span class="streak-count">0</span>
                 <span class="streak-label">day streak</span>
@@ -203,16 +217,35 @@
             <div class="modal-header">
                 <h3>Confirm Action</h3>
                 <button id="close-confirm-modal" class="btn-close">
-                    <span class="material-icons-round">close</span>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
+                <div class="confirmation-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
                 <p id="modal-message">Are you sure you want to perform this action?</p>
             </div>
             <div class="modal-footer">
                 <button id="modal-cancel" class="btn btn-outline">Cancel</button>
-                <button id="modal-confirm" class="btn btn-primary">Confirm</button>
+                <button id="modal-confirm" class="btn btn-danger">Confirm</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Achievement notification -->
+    <div class="achievement-popup" id="achievement-popup">
+        <div class="achievement-content">
+            <div class="achievement-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="achievement-text">
+                <h4 id="achievement-title">Achievement Unlocked!</h4>
+                <p id="achievement-message">You've reached a 7-day streak!</p>
+            </div>
+            <button id="close-achievement" class="btn-close">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     </div>
 

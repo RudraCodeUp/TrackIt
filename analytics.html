@@ -66,108 +66,126 @@
             <header class="main-header">
                 <div class="header-left">
                     <h2>Analytics</h2>
-                    <p class="subtitle">Track your progress and visualize your habits</p>
+                    <p class="subtitle">Track your progress and see insights</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-outline btn-with-icon" onclick="window.print()">
+                    <button id="print-analytics" class="btn btn-outline btn-with-icon">
                         <span class="material-icons-round">print</span>
                         <span>Print Report</span>
                     </button>
                 </div>
             </header>
             
-            <div class="analytics-charts-row">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3>Weekly Overview</h3>
-                        <div class="chart-options">
-                            <button class="btn-icon active">
-                                <span class="material-icons-round">bar_chart</span>
-                            </button>
-                            <button class="btn-icon">
-                                <span class="material-icons-round">pie_chart</span>
-                            </button>
-                        </div>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons-round">checklist</span>
                     </div>
-                    <div class="chart-container" id="weekly-chart">
-                        <!-- Weekly chart rendered here -->
-                        <div class="empty-chart-placeholder">
-                            <span class="material-icons-round">insights</span>
-                            <p>Add habits to see your weekly progress</p>
-                        </div>
+                    <div class="stat-content">
+                        <h3 id="total-habits-count">0</h3>
+                        <p>Total Habits</p>
                     </div>
                 </div>
-                
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3>Monthly Trends</h3>
-                        <div class="chart-options">
-                            <button class="btn-icon active">
-                                <span class="material-icons-round">show_chart</span>
-                            </button>
-                            <button class="btn-icon">
-                                <span class="material-icons-round">stacked_line_chart</span>
-                            </button>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons-round">local_fire_department</span>
                     </div>
-                    <div class="chart-container" id="monthly-chart">
-                        <!-- Monthly chart rendered here -->
-                        <canvas id="monthly-canvas"></canvas>
+                    <div class="stat-content">
+                        <h3 id="best-streak">0</h3>
+                        <p>Best Streak</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons-round">bar_chart</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="completion-rate">0%</h3>
+                        <p>Completion Rate</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="analytics-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Performance Summary</h3>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Weekly Performance</h3>
+                    <div class="chart-options">
+                        <button class="btn-icon active" title="Bar Chart">
+                            <span class="material-icons-round">bar_chart</span>
+                        </button>
+                        <button class="btn-icon" title="Pie Chart">
+                            <span class="material-icons-round">pie_chart</span>
+                        </button>
                     </div>
-                    <div id="summary-container" class="summary-stats">
-                        <!-- Summary stats rendered here -->
-                        <div class="stat-row">
-                            <div class="stat-icon">
-                                <span class="material-icons-round">check_circle</span>
-                            </div>
-                            <div class="stat-detail">
-                                <h4>Overall Completion</h4>
-                                <p class="stat-value">0%</p>
-                            </div>
+                </div>
+                <div class="chart-container" id="weekly-chart">
+                    <!-- Chart will be rendered here -->
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Monthly Trends</h3>
+                    <div class="chart-options">
+                        <button class="btn-icon active" title="Line Chart">
+                            <span class="material-icons-round">show_chart</span>
+                        </button>
+                        <button class="btn-icon" title="Area Chart">
+                            <span class="material-icons-round">stacked_line_chart</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container" id="monthly-chart">
+                    <!-- Chart will be rendered here -->
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Summary</h3>
+                </div>
+                <div class="summary-stats">
+                    <div class="stat-row">
+                        <div class="stat-icon">
+                            <span class="material-icons-round">emoji_events</span>
                         </div>
-                        <div class="stat-row">
-                            <div class="stat-icon">
-                                <span class="material-icons-round">local_fire_department</span>
-                            </div>
-                            <div class="stat-detail">
-                                <h4>Longest Streak</h4>
-                                <p class="stat-value">0 days</p>
-                            </div>
+                        <div class="stat-detail">
+                            <h4>Most Consistent Habit</h4>
+                            <p class="stat-value" id="most-consistent">None</p>
                         </div>
-                        <div class="stat-row">
-                            <div class="stat-icon">
-                                <span class="material-icons-round">emoji_events</span>
-                            </div>
-                            <div class="stat-detail">
-                                <h4>Most Consistent Habit</h4>
-                                <p class="stat-value">None yet</p>
-                            </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-icon">
+                            <span class="material-icons-round">calendar_today</span>
+                        </div>
+                        <div class="stat-detail">
+                            <h4>Most Active Day</h4>
+                            <p class="stat-value" id="most-active-day">None</p>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-icon">
+                            <span class="material-icons-round">trending_up</span>
+                        </div>
+                        <div class="stat-detail">
+                            <h4>Current Streak</h4>
+                            <p class="stat-value" id="current-streak-value">0 days</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="analytics-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Motivation</h3>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Motivation</h3>
+                </div>
+                <div class="quote-container">
+                    <div class="quote-icon">
+                        <span class="material-icons-round">format_quote</span>
                     </div>
-                    <div class="quote-container">
-                        <div class="quote-icon">
-                            <span class="material-icons-round">format_quote</span>
-                        </div>
-                        <blockquote id="motivation-quote">
-                            "Consistency is the key to achieving and maintaining momentum."
-                        </blockquote>
-                    </div>
+                    <blockquote id="motivation-quote">
+                        "Success is the sum of small efforts, repeated day in and day out."
+                    </blockquote>
                 </div>
             </div>
         </main>
