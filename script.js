@@ -1,176 +1,536 @@
 // Main data structure
 let appData = {
     habits: [],
-    theme: 'light'
+    theme: 'light',
+    categories: [
+        { id: 'health', name: 'Health & Fitness', color: '#4CAF50' },
+        { id: 'productivity', name: 'Productivity', color: '#5C6AC4' },
+        { id: 'self-care', name: 'Self Care', color: '#FF9800' },
+        { id: 'learning', name: 'Learning', color: '#9C27B0' }
+    ],
+    settings: {
+        layout: 'grid',
+        weekStartsOn: 1, // 0 = Sunday, 1 = Monday
+        reminderTime: '20:00',
+        showReminders: true,
+        showAchievements: true
+    }
 };
+
+// DOM Elements
+const domElements = {};
+
+// Current page
+let currentPage = '';
 
 // Load data on page load
 document.addEventListener('DOMContentLoaded', () => {
-    loadFromLocalStorage();
-    setupPageHandlers();
+    initApp();
 });
 
-// Set up page-specific handlers
-function setupPageHandlers() {
-    // Determine current page
-    const currentPath = window.location.pathname;
-    const pageName = currentPath.split('/').pop() || 'index.html';
+// Initialize the application
+function initApp() {
+    // Load saved data
+    loadFromLocalStorage();
+    
+    // Identify current page
+    currentPage = getCurrentPage();
+    
+    // Cache DOM elements
+    cacheDOMElements();
+    
+    // Setup common elements across all pages
+    setupCommonElements();
+    
+    // Setup page-specific functionality
+    setupPageFunctionality();
+    
+    // Apply current theme
+    applyTheme(appData.theme);
+    
+    console.log(`TrackIt app initialized on ${currentPage} page`);
+}
 
-    // Common elements across pages
-    setupThemeToggle();
+// Get current page name
+function getCurrentPage() {
+    const path = window.location.pathname;
+    const page = path.split('/').pop() || 'index.html';
+    return page.replace('.html', '');
+}
 
-    // Page-specific setup
-    switch (pageName) {
-        case 'index.html':
-            renderDashboard();
+// Cache frequently used DOM elements
+function cacheDOMElements() {
+    // Common elements across all pages
+    domElements.sidebar = document.getElementById('sidebar');
+    domElements.sidebarToggle = document.getElementById('sidebar-toggle');
+    domElements.themeToggle = document.getElementById('theme-toggle');
+    domElements.toastContainer = document.getElementById('toast-container');
+    
+    // Page specific elements
+    switch (currentPage) {
+        case 'index':
+            domElements.habitsContainer = document.getElementById('habits-container');
+            domElements.emptyState = document.getElementById('empty-state-message');
+            domElements.quickAddButton = document.getElementById('quick-add');
+            domElements.quickAddModal = document.getElementById('quick-add-modal');
+            domElements.streakCounter = document.getElementById('current-streak');
+            domElements.completionRate = document.getElementById('completion-rate');
+            domElements.totalHabits = document.getElementById('total-habits');
             break;
-        case 'manage.html':
+        case 'manage':
+            domElements.habitsList = document.getElementById('habits-list');
+            domElements.addHabitButton = document.getElementById('add-habit-btn');
+            domElements.resetAllButton = document.getElementById('reset-all-btn');
+            domElements.habitSearch = document.getElementById('habit-search');
+            break;
+        case 'analytics':
+            // Analytics page DOM elements
+            break;
+        case 'settings':
+            // Settings page DOM elements
+            break;
+        case 'about':
+            // About page DOM elements
+            break;
+    }
+    
+    // Modal elements if they exist
+    domElements.confirmationModal = document.getElementById('confirmation-modal');
+}
+
+// Setup elements common to all pages
+function setupCommonElements() {
+    // Setup theme toggle
+    domElements.themeToggle = document.getElementById('theme-toggle');
+    if (domElements.themeToggle) {
+        // Apply current theme
+        domElements.themeToggle.checked = appData.theme === 'dark';
+        
+        // Listen for changes
+        domElements.themeToggle.addEventListener('change', () => {
+            const theme = domElements.themeToggle.checked ? 'dark' : 'light';
+            applyTheme(theme);
+            appData.theme = theme;
+            saveToLocalStorage();
+        });
+    }
+    
+    // Apply theme on page load
+    applyTheme(appData.theme);
+    
+    // Set today's date if element exists (used in dashboard)
+    const todayDateElement = document.getElementById('today-date');
+    if (todayDateElement) {
+        todayDateElement.textContent = formatDateLong(new Date());
+    }
+    
+    // Setup mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+    }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (event) => {
+        const navbarMenu = document.getElementById('navbar-menu');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        
+        if (navbarMenu && navbarMenu.classList.contains('show') && 
+            event.target !== navbarMenu && 
+            event.target !== mobileMenuToggle && 
+            !navbarMenu.contains(event.target) && 
+            !mobileMenuToggle.contains(event.target)) {
+            navbarMenu.classList.remove('show');
+        }
+    });
+}
+
+// Setup page-specific functionality
+function setupPageFunctionality() {
+    switch (currentPage) {
+        case 'index':
+            setupDashboardPage();
+            break;
+        case 'manage':
             setupManagePage();
             break;
-        case 'analytics.html':
-            renderAnalytics();
+        case 'analytics':
+            setupAnalyticsPage();
             break;
-        case 'settings.html':
+        case 'settings':
             setupSettingsPage();
             break;
-        case '':  // Default page (index)
-            renderDashboard();
+        case 'about':
+            // No specific setup needed for about page
             break;
+    }
+}
+
+// Toggle sidebar expanded/collapsed state
+function toggleSidebar() {
+    if (domElements.sidebar) {
+        domElements.sidebar.classList.toggle('collapsed');
+        
+        // Store preference in localStorage
+        const isCollapsed = domElements.sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebarCollapsed', isCollapsed);
+    }
+}
+
+// Add this function to handle the mobile menu toggle
+function toggleMobileMenu() {
+    const navbarMenu = document.getElementById('navbar-menu');
+    if (navbarMenu) {
+        navbarMenu.classList.toggle('show');
     }
 }
 
 // ===== DATA MANAGEMENT =====
 
 function loadFromLocalStorage() {
-    const savedData = localStorage.getItem('trackItData');
-    if (savedData) {
-        try {
-            appData = JSON.parse(savedData);
-            applyTheme(appData.theme);
-        } catch (e) {
-            console.error('Error loading data:', e);
-            // Initialize with default data if loading fails
-            resetToDefaultData();
+    try {
+        const savedData = localStorage.getItem('trackItData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            // Merge with default values to ensure all properties exist
+            appData = {
+                ...appData,
+                ...parsedData
+            };
         }
-    } else {
+        
+        // Load sidebar state
+        const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (sidebarCollapsed && domElements.sidebar) {
+            domElements.sidebar.classList.add('collapsed');
+        }
+    } catch (error) {
+        console.error('Error loading data from localStorage:', error);
+        showToast('Error loading saved data', 'error');
+        // Reset to defaults if there's an error
         resetToDefaultData();
     }
 }
 
 function saveToLocalStorage() {
-    localStorage.setItem('trackItData', JSON.stringify(appData));
+    try {
+        localStorage.setItem('trackItData', JSON.stringify(appData));
+    } catch (error) {
+        console.error('Error saving data to localStorage:', error);
+        showToast('Failed to save your data', 'error');
+    }
 }
 
 function resetToDefaultData() {
     appData = {
         habits: [],
-        theme: 'light'
+        theme: 'light',
+        categories: [
+            { id: 'health', name: 'Health & Fitness', color: '#4CAF50' },
+            { id: 'productivity', name: 'Productivity', color: '#5C6AC4' },
+            { id: 'self-care', name: 'Self Care', color: '#FF9800' },
+            { id: 'learning', name: 'Learning', color: '#9C27B0' }
+        ],
+        settings: {
+            layout: 'grid',
+            weekStartsOn: 1,
+            reminderTime: '20:00',
+            showReminders: true,
+            showAchievements: true
+        }
     };
+    
     saveToLocalStorage();
 }
 
 // ===== THEME MANAGEMENT =====
 
-function setupThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.textContent = appData.theme === 'light' ? '🌞' : '🌙';
-        themeToggle.addEventListener('click', toggleTheme);
-    }
-
-    // Theme buttons in settings
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', () => {
-                applyTheme(btn.dataset.theme);
-                appData.theme = btn.dataset.theme;
-                saveToLocalStorage();
-            });
-        }
-    });
-}
-
-function toggleTheme() {
-    const newTheme = appData.theme === 'light' ? 'dark' : 'light';
-    applyTheme(newTheme);
-    appData.theme = newTheme;
-    saveToLocalStorage();
-}
-
 function applyTheme(theme) {
-    document.body.classList.remove('light-theme', 'dark-theme');
-    document.body.classList.add(`${theme}-theme`);
-    
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.textContent = theme === 'light' ? '🌞' : '🌙';
+    const body = document.body;
+    if (theme === 'dark') {
+        body.classList.add('dark-theme');
+    } else {
+        body.classList.remove('dark-theme');
     }
 }
 
 // ===== DASHBOARD PAGE =====
 
-function renderDashboard() {
-    const habitsContainer = document.getElementById('habits-container');
-    if (!habitsContainer) return;
-
-    habitsContainer.innerHTML = '';
+function setupDashboardPage() {
+    renderDashboard();
     
-    // Show empty state if no habits
-    if (appData.habits.length === 0) {
-        const emptyState = document.querySelector('.empty-state');
-        if (emptyState) {
-            emptyState.classList.remove('hidden');
-            habitsContainer.appendChild(emptyState);
-        }
-        return;
+    // Setup Quick Add button
+    const quickAddButton = document.getElementById('quick-add');
+    if (quickAddButton) {
+        quickAddButton.addEventListener('click', showQuickAddModal);
     }
+    
+    // Setup Empty State Add button
+    const emptyAddBtn = document.getElementById('empty-add-btn');
+    if (emptyAddBtn) {
+        emptyAddBtn.addEventListener('click', showQuickAddModal);
+    }
+    
+    // Setup Quick Add Modal buttons
+    const closeModal = document.getElementById('close-modal');
+    if (closeModal) {
+        closeModal.addEventListener('click', hideQuickAddModal);
+    }
+    
+    const cancelAdd = document.getElementById('cancel-add');
+    if (cancelAdd) {
+        cancelAdd.addEventListener('click', hideQuickAddModal);
+    }
+    
+    const confirmAdd = document.getElementById('confirm-add');
+    if (confirmAdd) {
+        confirmAdd.addEventListener('click', addHabitFromModal);
+    }
+    
+    // Setup filter dropdown
+    const dropdownToggle = document.getElementById('dropdown-toggle');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    
+    if (dropdownToggle && dropdownMenu) {
+        dropdownToggle.addEventListener('click', (e) => {
+            dropdownMenu.classList.toggle('show');
+            e.stopPropagation();
+        });
+        
+        // Close dropdown when clicking elsewhere
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
+        
+        // Setup filter options
+        const filterOptions = document.querySelectorAll('.dropdown-item');
+        filterOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const filterText = document.getElementById('filter-text');
+                if (filterText) {
+                    filterText.textContent = option.textContent;
+                }
+                
+                // Apply filter
+                filterHabits(option.dataset.filter);
+                
+                // Mark active
+                filterOptions.forEach(op => op.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+    }
+    
+    // Set today's date
+    const todayElement = document.getElementById('today-date');
+    if (todayElement) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        todayElement.textContent = new Date().toLocaleDateString('en-US', options);
+    }
+}
 
-    // Render each habit card
+function renderDashboard() {
+    if (!domElements.habitsContainer || !domElements.emptyState) return;
+    
+    // Update stats first
+    updateDashboardStats();
+    
+    // Clear existing habits
+    domElements.habitsContainer.innerHTML = '';
+    
+    if (appData.habits.length === 0) {
+        // Show empty state if no habits
+        domElements.emptyState.classList.remove('hidden');
+        domElements.habitsContainer.classList.add('hidden');
+    } else {
+        // Hide empty state and show habits
+        domElements.emptyState.classList.add('hidden');
+        domElements.habitsContainer.classList.remove('hidden');
+        
+        // Render each habit
+        appData.habits.forEach(habit => {
+            const habitCard = createHabitCard(habit);
+            domElements.habitsContainer.appendChild(habitCard);
+        });
+    }
+}
+
+function updateDashboardStats() {
+    // Update stats display
+    if (domElements.totalHabits) {
+        domElements.totalHabits.textContent = appData.habits.length;
+    }
+    
+    if (domElements.streakCounter) {
+        const bestStreak = calculateBestStreak();
+        domElements.streakCounter.textContent = bestStreak;
+    }
+    
+    if (domElements.completionRate) {
+        const rate = calculateCompletionRate();
+        domElements.completionRate.textContent = `${rate}%`;
+    }
+}
+
+function calculateBestStreak() {
+    if (appData.habits.length === 0) return 0;
+    
+    // Find the best streak among all habits
+    let bestStreak = 0;
     appData.habits.forEach(habit => {
-        const habitCard = createHabitCard(habit);
-        habitsContainer.appendChild(habitCard);
+        const habitStreak = calculateHabitStreak(habit);
+        if (habitStreak > bestStreak) {
+            bestStreak = habitStreak;
+        }
     });
+    
+    return bestStreak;
+}
+
+function calculateHabitStreak(habit) {
+    if (!habit.history) return 0;
+    
+    // Get dates in descending order (most recent first)
+    const dates = Object.keys(habit.history)
+        .filter(date => habit.history[date])
+        .sort((a, b) => new Date(b) - new Date(a));
+    
+    if (dates.length === 0) return 0;
+    
+    // Check if completed today
+    const today = formatDate(new Date());
+    const completedToday = dates.includes(today);
+    
+    // If not completed today, check if completed yesterday
+    if (!completedToday) {
+        const yesterday = formatDate(new Date(Date.now() - 86400000));
+        if (!dates.includes(yesterday)) {
+            return 0; // Streak broken
+        }
+    }
+    
+    // Count consecutive days
+    let streak = completedToday ? 1 : 0;
+    const startIndex = completedToday ? 1 : 0;
+    
+    for (let i = startIndex; i < dates.length; i++) {
+        const currentDate = new Date(dates[i]);
+        const prevDate = i > 0 ? new Date(dates[i-1]) : new Date();
+        
+        const differenceInDays = Math.round((prevDate - currentDate) / 86400000);
+        
+        if (differenceInDays === 1) {
+            streak++;
+        } else if (differenceInDays > 1) {
+            break; // Streak broken
+        }
+    }
+    
+    return streak;
+}
+
+function calculateCompletionRate() {
+    if (appData.habits.length === 0) return 0;
+    
+    // Get last 7 days
+    const last7Days = [];
+    for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        last7Days.push(formatDate(date));
+    }
+    
+    // Count total possible completions (habits × days)
+    const totalPossible = appData.habits.length * 7;
+    
+    // Count actual completions
+    let completed = 0;
+    appData.habits.forEach(habit => {
+        if (!habit.history) return;
+        
+        last7Days.forEach(date => {
+            if (habit.history[date]) {
+                completed++;
+            }
+        });
+    });
+    
+    // Calculate percentage
+    const rate = Math.round((completed / totalPossible) * 100);
+    return isNaN(rate) ? 0 : rate;
 }
 
 function createHabitCard(habit) {
     const template = document.getElementById('habit-card-template');
     if (!template) return document.createElement('div');
     
+    // Clone the template content
     const habitCard = document.importNode(template.content, true).querySelector('.habit-card');
     
-    // Set habit name
-    habitCard.querySelector('.habit-name').textContent = habit.name;
+    // Set card data
+    habitCard.dataset.id = habit.id;
     
-    // Set today's checkbox
+    // Set habit name
+    const nameElement = habitCard.querySelector('.habit-name');
+    if (nameElement) {
+        nameElement.textContent = habit.name;
+    }
+    
+    // Set category badge if exists
+    const categoryBadge = habitCard.querySelector('.habit-category-badge');
+    if (categoryBadge && habit.category) {
+        const category = appData.categories.find(c => c.id === habit.category);
+        if (category) {
+            categoryBadge.textContent = category.name;
+            categoryBadge.style.backgroundColor = `${category.color}20`; // Add 20 for transparency
+            categoryBadge.style.color = category.color;
+        } else {
+            categoryBadge.textContent = ''; // Clear text if category not found
+            categoryBadge.style.backgroundColor = ''; // Reset background
+            categoryBadge.style.color = ''; // Reset text color
+        }
+    }
+    
+    // Set today's checkbox - FIXED: added null check
     const today = formatDate(new Date());
     const checkbox = habitCard.querySelector('.today-checkbox input');
-    checkbox.checked = habit.history && habit.history[today] || false;
-    checkbox.addEventListener('change', () => {
-        toggleHabitCompletion(habit.id, today);
-    });
-    
-    // Set streak count
-    const streakCount = calculateStreak(habit);
-    habitCard.querySelector('.streak-count').textContent = streakCount;
-    
-    // Render week tracker
-    const dayDots = habitCard.querySelector('.day-dots');
-    const weekDates = getLastSevenDays();
-    
-    weekDates.forEach(date => {
-        const dot = document.createElement('div');
-        dot.classList.add('day-dot');
-        
-        if (habit.history && habit.history[date]) {
-            dot.classList.add('completed');
-        }
-        
-        dot.addEventListener('click', () => {
-            toggleHabitCompletion(habit.id, date);
+    if (checkbox) { // Add this check to prevent null errors
+        checkbox.checked = habit.history && habit.history[today] || false;
+        checkbox.addEventListener('change', () => {
+            toggleHabitCompletion(habit.id, today);
         });
+    }
+    
+    // Set streak count - FIXED: added null check
+    const streakElement = habitCard.querySelector('.streak-count');
+    if (streakElement) {
+        const streakCount = calculateStreak(habit);
+        streakElement.textContent = streakCount;
+    }
+    
+    // Render week tracker - FIXED: added null check
+    const dayDots = habitCard.querySelector('.day-dots');
+    if (dayDots) {
+        const weekDates = getLastSevenDays();
         
-        dayDots.appendChild(dot);
-    });
+        // Clear existing dots
+        dayDots.innerHTML = '';
+        
+        weekDates.forEach(date => {
+            const dot = document.createElement('div');
+            dot.classList.add('day-dot');
+            
+            if (habit.history && habit.history[date]) {
+                dot.classList.add('completed');
+            }
+            
+            dot.addEventListener('click', () => {
+                toggleHabitCompletion(habit.id, date);
+            });
+            
+            dayDots.appendChild(dot);
+        });
+    }
     
     return habitCard;
 }
@@ -531,6 +891,31 @@ function renderMotivationalQuote() {
 // ===== SETTINGS PAGE =====
 
 function setupSettingsPage() {
+    // Theme buttons
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    themeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const theme = btn.dataset.theme;
+            applyTheme(theme);
+            appData.theme = theme;
+            saveToLocalStorage();
+            
+            // Update active state
+            themeButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update theme toggle checkbox if it exists
+            if (domElements.themeToggle) {
+                domElements.themeToggle.checked = theme === 'dark';
+            }
+        });
+        
+        // Set active state based on current theme
+        if (btn.dataset.theme === appData.theme) {
+            btn.classList.add('active');
+        }
+    });
+    
     // Export button
     const exportBtn = document.getElementById('export-btn');
     if (exportBtn) {
@@ -548,9 +933,9 @@ function setupSettingsPage() {
     }
     
     // Clear data button
-    const clearBtn = document.getElementById('clear-data-btn');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
+    const clearDataBtn = document.getElementById('clear-data-btn');
+    if (clearDataBtn) {
+        clearDataBtn.addEventListener('click', () => {
             showConfirmationModal(
                 'Are you sure you want to clear all data? This action cannot be undone.',
                 clearAllData
@@ -558,152 +943,211 @@ function setupSettingsPage() {
         });
     }
     
-    // Setup modal
+    // Setup confirmation modal
     setupConfirmationModal();
 }
 
-function exportData() {
-    const dataStr = JSON.stringify(appData);
-    const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
-    
-    const exportFileDefaultName = `trackit-backup-${formatDate(new Date())}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-}
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            
-            // Validate data structure
-            if (!importedData.habits || !Array.isArray(importedData.habits)) {
-                throw new Error('Invalid data format');
-            }
-            
-            appData = importedData;
-            saveToLocalStorage();
-            applyTheme(appData.theme);
-            
-            alert('Data imported successfully!');
-        } catch (error) {
-            alert('Error importing data: ' + error.message);
+// Show quick add modal
+function showQuickAddModal() {
+    const modal = document.getElementById('quick-add-modal');
+    if (modal) {
+        modal.classList.add('show');
+        
+        // Reset form fields
+        const nameInput = document.getElementById('habit-name');
+        if (nameInput) {
+            nameInput.value = '';
+            nameInput.focus();
         }
-    };
-    reader.readAsText(file);
-}
-
-function clearAllData() {
-    resetToDefaultData();
-    applyTheme('light');
-    alert('All data has been cleared.');
-}
-
-// ===== MODAL FUNCTIONALITY =====
-
-function setupConfirmationModal() {
-    const modal = document.getElementById('confirmation-modal');
-    if (!modal) return;
-    
-    const cancelBtn = document.getElementById('modal-cancel');
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', hideConfirmationModal);
+        
+        const categorySelect = document.getElementById('habit-category');
+        if (categorySelect) {
+            categorySelect.value = '';
+        }
     }
 }
 
-function showConfirmationModal(message, confirmCallback) {
-    const modal = document.getElementById('confirmation-modal');
-    const messageEl = document.getElementById('modal-message');
-    const confirmBtn = document.getElementById('modal-confirm');
+// Hide quick add modal
+function hideQuickAddModal() {
+    const modal = document.getElementById('quick-add-modal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+}
+
+// Add habit from modal
+function addHabitFromModal() {
+    const nameInput = document.getElementById('habit-name');
+    const categorySelect = document.getElementById('habit-category');
     
-    if (!modal || !messageEl || !confirmBtn) return;
+    if (!nameInput) return;
     
-    messageEl.textContent = message;
+    const name = nameInput.value.trim();
+    if (!name) {
+        showToast('Please enter a habit name', 'error');
+        return;
+    }
     
-    // Remove previous event listeners and add new one
-    const newConfirmBtn = confirmBtn.cloneNode(true);
-    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    // Create new habit
+    const newHabit = {
+        id: Date.now().toString(),
+        name: name,
+        category: categorySelect ? categorySelect.value : '',
+        history: {},
+        createdAt: new Date().toISOString()
+    };
     
-    newConfirmBtn.addEventListener('click', () => {
-        confirmCallback();
-        hideConfirmationModal();
+    // Add to habits array
+    appData.habits.push(newHabit);
+    saveToLocalStorage();
+    hideQuickAddModal();
+    renderDashboard();
+    
+    showToast(`Habit "${name}" added successfully!`, 'success');
+}
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    toast.classList.add('toast', type);
+    
+    let icon = 'info';
+    switch (type) {
+        case 'success': icon = 'check_circle'; break;
+        case 'error': icon = 'error'; break;
+        case 'warning': icon = 'warning'; break;
+    }
+    
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <span class="material-icons-round">${icon}</span>
+        </div>
+        <div class="toast-content">
+            <p class="toast-message">${message}</p>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentNode === toastContainer) {
+                toastContainer.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Filter habits by completion status
+function filterHabits(filter) {
+    const habitsContainer = document.getElementById('habits-container');
+    if (!habitsContainer) return;
+    
+    const habitCards = habitsContainer.querySelectorAll('.habit-card');
+    const today = formatDate(new Date());
+    
+    habitCards.forEach(card => {
+        const habitId = card.dataset.id;
+        const habit = appData.habits.find(h => h.id === habitId);
+        
+        if (!habit) return;
+        
+        const isCompleted = habit.history && habit.history[today];
+        
+        switch (filter) {
+            case 'completed':
+                card.style.display = isCompleted ? 'block' : 'none';
+                break;
+            case 'pending':
+                card.style.display = !isCompleted ? 'block' : 'none';
+                break;
+            default: // 'all'
+                card.style.display = 'block';
+                break;
+        }
     });
-    
-    modal.classList.remove('hidden');
 }
 
-function hideConfirmationModal() {
-    const modal = document.getElementById('confirmation-modal');
-    if (modal) modal.classList.add('hidden');
-}
-
-// ===== UTILITY FUNCTIONS =====
-
+// Utility function for date formatting
 function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
 }
 
+// Format date in long readable format (e.g., "Monday, October 20, 2025")
+function formatDateLong(date) {
+    return date.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+// Get last seven days for week tracker
 function getLastSevenDays() {
-    const dates = [];
-    const today = new Date();
-    
-    // Start from 6 days ago to include today
+    const days = [];
     for (let i = 6; i >= 0; i--) {
         const date = new Date();
-        date.setDate(today.getDate() - i);
-        dates.push(formatDate(date));
+        date.setDate(date.getDate() - i);
+        days.push(formatDate(date));
     }
-    
-    return dates;
+    return days;
 }
 
+// Get last thirty days for analytics
 function getLastThirtyDays() {
-    const dates = [];
-    const today = new Date();
-    
+    const days = [];
     for (let i = 29; i >= 0; i--) {
         const date = new Date();
-        date.setDate(today.getDate() - i);
-        dates.push(formatDate(date));
+        date.setDate(date.getDate() - i);
+        days.push(formatDate(date));
     }
-    
-    return dates;
+    return days;
 }
 
+// Calculate streak for a habit
 function calculateStreak(habit) {
-    if (!habit || !habit.history) return 0;
+    if (!habit.history) return 0;
     
     let streak = 0;
-    const today = new Date();
+    const today = formatDate(new Date());
+    const yesterday = formatDate(new Date(Date.now() - 86400000));
     
-    // Check today first
-    let currentDate = new Date(today);
-    let currentDateStr = formatDate(currentDate);
-    
-    // If today is completed, count it and look backward
-    if (habit.history[currentDateStr]) {
+    if (habit.history[today]) {
+        // If completed today, start counting from today
         streak = 1;
+        let currentDate = new Date();
         
-        // Look back one day at a time
-        let daysBack = 1;
         while (true) {
-            currentDate = new Date(today);
-            currentDate.setDate(today.getDate() - daysBack);
-            currentDateStr = formatDate(currentDate);
+            currentDate.setDate(currentDate.getDate() - 1);
+            const dateStr = formatDate(currentDate);
             
-            if (habit.history[currentDateStr]) {
+            if (habit.history[dateStr]) {
                 streak++;
-                daysBack++;
+            } else {
+                break;
+            }
+        }
+    } else if (habit.history[yesterday]) {
+        // If not completed today but completed yesterday, start counting from yesterday
+        let currentDate = new Date(Date.now() - 86400000); // yesterday
+        
+        while (true) {
+            const dateStr = formatDate(currentDate);
+            
+            if (habit.history[dateStr]) {
+                streak++;
+                currentDate.setDate(currentDate.getDate() - 1);
             } else {
                 break;
             }
@@ -711,4 +1155,49 @@ function calculateStreak(habit) {
     }
     
     return streak;
+}
+
+// Setup confirmation modal
+function setupConfirmationModal() {
+    const closeModalBtn = document.getElementById('close-confirm-modal');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+            const modal = document.getElementById('confirmation-modal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        });
+    }
+    
+    const cancelBtn = document.getElementById('modal-cancel');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            const modal = document.getElementById('confirmation-modal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        });
+    }
+}
+
+// Show confirmation modal
+function showConfirmationModal(message, confirmCallback) {
+    const modal = document.getElementById('confirmation-modal');
+    const messageElem = document.getElementById('modal-message');
+    const confirmBtn = document.getElementById('modal-confirm');
+    
+    if (!modal || !messageElem || !confirmBtn) return;
+    
+    messageElem.textContent = message;
+    
+    // Remove old event listener and add new one
+    confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+    const newConfirmBtn = document.getElementById('modal-confirm');
+    
+    newConfirmBtn.addEventListener('click', () => {
+        confirmCallback();
+        modal.classList.remove('show');
+    });
+    
+    modal.classList.add('show');
 }

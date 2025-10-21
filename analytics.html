@@ -3,55 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackIt - Analytics</title>
+    <title>TrackIt | Analytics</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="page-header">
-            <a href="index.html" class="back-btn">← Back</a>
-            <h1>Progress Dashboard</h1>
-        </div>
-    </header>
-
-    <main class="analytics-page">
-        <div class="chart-section">
-            <h2>Weekly Progress</h2>
-            <div id="weekly-chart" class="chart">
-                <!-- Weekly chart will be rendered here -->
+    <!-- App Wrapper -->
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-navbar" id="top-navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <span class="material-icons-round logo-icon">track_changes</span>
+                    <h1>TrackIt</h1>
+                </div>
             </div>
-        </div>
-
-        <div class="chart-section">
-            <h2>Monthly Trends</h2>
-            <div id="monthly-chart" class="chart">
-                <canvas id="monthly-canvas"></canvas>
+            
+            <div class="navbar-center">
+                <div class="navbar-menu" id="navbar-menu">
+                    <a href="index.html" class="menu-item">
+                        <span class="material-icons-round">dashboard</span>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                    <a href="manage.html" class="menu-item">
+                        <span class="material-icons-round">playlist_add_check</span>
+                        <span class="menu-text">Manage</span>
+                    </a>
+                    <a href="analytics.html" class="menu-item active">
+                        <span class="material-icons-round">insights</span>
+                        <span class="menu-text">Analytics</span>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <span class="material-icons-round">settings</span>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                    <a href="about.html" class="menu-item">
+                        <span class="material-icons-round">help_outline</span>
+                        <span class="menu-text">About</span>
+                    </a>
+                </div>
             </div>
-        </div>
-
-        <div class="summary-section">
-            <h2>Completion Summary</h2>
-            <div id="summary-container">
-                <!-- Summary stats will be rendered here -->
+            
+            <div class="navbar-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="theme-toggle">
+                        <input type="checkbox" id="theme-toggle">
+                        <div class="slider round">
+                            <span class="material-icons-round sun-icon">light_mode</span>
+                            <span class="material-icons-round moon-icon">dark_mode</span>
+                        </div>
+                    </label>
+                </div>
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <span class="material-icons-round">menu</span>
+                </button>
             </div>
-        </div>
+        </nav>
 
-        <div class="motivation-section">
-            <h2>Motivation</h2>
-            <div class="quote-container">
-                <p id="motivation-quote"></p>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h2>Analytics</h2>
+                    <p class="subtitle">Track your progress and visualize your habits</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline btn-with-icon" onclick="window.print()">
+                        <span class="material-icons-round">print</span>
+                        <span>Print Report</span>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="analytics-charts-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Weekly Overview</h3>
+                        <div class="chart-options">
+                            <button class="btn-icon active">
+                                <span class="material-icons-round">bar_chart</span>
+                            </button>
+                            <button class="btn-icon">
+                                <span class="material-icons-round">pie_chart</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="weekly-chart">
+                        <!-- Weekly chart rendered here -->
+                        <div class="empty-chart-placeholder">
+                            <span class="material-icons-round">insights</span>
+                            <p>Add habits to see your weekly progress</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Monthly Trends</h3>
+                        <div class="chart-options">
+                            <button class="btn-icon active">
+                                <span class="material-icons-round">show_chart</span>
+                            </button>
+                            <button class="btn-icon">
+                                <span class="material-icons-round">stacked_line_chart</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="monthly-chart">
+                        <!-- Monthly chart rendered here -->
+                        <canvas id="monthly-canvas"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
-    </main>
+            
+            <div class="analytics-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Performance Summary</h3>
+                    </div>
+                    <div id="summary-container" class="summary-stats">
+                        <!-- Summary stats rendered here -->
+                        <div class="stat-row">
+                            <div class="stat-icon">
+                                <span class="material-icons-round">check_circle</span>
+                            </div>
+                            <div class="stat-detail">
+                                <h4>Overall Completion</h4>
+                                <p class="stat-value">0%</p>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-icon">
+                                <span class="material-icons-round">local_fire_department</span>
+                            </div>
+                            <div class="stat-detail">
+                                <h4>Longest Streak</h4>
+                                <p class="stat-value">0 days</p>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-icon">
+                                <span class="material-icons-round">emoji_events</span>
+                            </div>
+                            <div class="stat-detail">
+                                <h4>Most Consistent Habit</h4>
+                                <p class="stat-value">None yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Motivation</h3>
+                    </div>
+                    <div class="quote-container">
+                        <div class="quote-icon">
+                            <span class="material-icons-round">format_quote</span>
+                        </div>
+                        <blockquote id="motivation-quote">
+                            "Consistency is the key to achieving and maintaining momentum."
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-    <footer>
-        <p>© 2025 TrackIt</p>
-        <div class="footer-links">
-            <a href="settings.html">Settings </a>
-            <a href="about.html">About </a>
-        </div>
-    </footer>
+    <!-- Toast notification container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
 </body>

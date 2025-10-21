@@ -3,69 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackIt - Manage Habits</title>
+    <title>TrackIt | Manage Habits</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="page-header">
-            <a href="index.html" class="back-btn">← Back</a>
-            <h1>Add / Manage Habits</h1>
-        </div>
-    </header>
-
-    <main class="manage-page">
-        <div class="add-form">
-            <input type="text" id="new-habit-input" placeholder="Enter habit name...">
-            <button id="add-new-habit-btn" class="primary-btn">Add </button>
-        </div>
-
-        <div class="habits-section">
-            <h2>Your Habits</h2>
-            <div id="habits-list">
-                <!-- Habits list for editing/deleting will be populated here -->
-                <div class="empty-state hidden">
-                    <p>No habits added yet.</p>
+    <!-- App Wrapper -->
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-navbar" id="top-navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <span class="material-icons-round logo-icon">track_changes</span>
+                    <h1>TrackIt</h1>
                 </div>
             </div>
-        </div>
+            
+            <div class="navbar-center">
+                <div class="navbar-menu" id="navbar-menu">
+                    <a href="index.html" class="menu-item">
+                        <span class="material-icons-round">dashboard</span>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                    <a href="manage.html" class="menu-item active">
+                        <span class="material-icons-round">playlist_add_check</span>
+                        <span class="menu-text">Manage</span>
+                    </a>
+                    <a href="analytics.html" class="menu-item">
+                        <span class="material-icons-round">insights</span>
+                        <span class="menu-text">Analytics</span>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <span class="material-icons-round">settings</span>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                    <a href="about.html" class="menu-item">
+                        <span class="material-icons-round">help_outline</span>
+                        <span class="menu-text">About</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="theme-toggle">
+                        <input type="checkbox" id="theme-toggle">
+                        <div class="slider round">
+                            <span class="material-icons-round sun-icon">light_mode</span>
+                            <span class="material-icons-round moon-icon">dark_mode</span>
+                        </div>
+                    </label>
+                </div>
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <span class="material-icons-round">menu</span>
+                </button>
+            </div>
+        </nav>
 
-        <div class="danger-zone">
-            <button id="reset-all-btn" class="danger-btn">Reset All Habits </button>
-        </div>
-    </main>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h2>Manage Habits</h2>
+                    <p class="subtitle">Create, edit and organize your habits</p>
+                </div>
+                <div class="header-actions">
+                    <button id="add-habit-btn" class="btn btn-primary btn-with-icon">
+                        <span class="material-icons-round">add</span>
+                        <span>New Habit</span>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="manage-search">
+                <div class="search-bar">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" id="habit-search" placeholder="Search habits...">
+                </div>
+            </div>
 
-    <footer>
-        <p>© 2025 TrackIt</p>
-        <div class="footer-links">
-            <a href="settings.html">Settings </a>
-            <a href="about.html">About </a>
-        </div>
-    </footer>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Your Habits</h3>
+                </div>
+                <div id="habits-list" class="habits-list">
+                    <!-- Habits list for editing/deleting will be populated here -->
+                </div>
+                
+                <div class="add-habit-form">
+                    <div class="form-group">
+                        <input type="text" id="new-habit-input" class="form-control" placeholder="Add a new habit...">
+                    </div>
+                    <button id="add-new-habit-btn" class="btn btn-primary">Add Habit</button>
+                </div>
+            </div>
+
+            <div class="card danger-zone">
+                <div class="card-header">
+                    <h3>Danger Zone</h3>
+                </div>
+                <p>Warning: These actions cannot be undone</p>
+                <button id="reset-all-btn" class="btn btn-danger btn-with-icon">
+                    <span class="material-icons-round">delete_forever</span>
+                    <span>Reset All Habits</span>
+                </button>
+            </div>
+        </main>
+    </div>
 
     <!-- Template for editable habit items -->
     <template id="habit-item-template">
         <div class="habit-item">
             <span class="habit-name"></span>
             <div class="habit-actions">
-                <button class="edit-btn">Edit</button>
-                <button class="delete-btn">Delete</button>
+                <button class="btn btn-outline btn-sm edit-btn">Edit</button>
+                <button class="btn btn-danger btn-sm delete-btn">Delete</button>
             </div>
         </div>
     </template>
 
     <!-- Confirmation modal template -->
-    <div id="confirmation-modal" class="modal hidden">
+    <div id="confirmation-modal" class="modal">
         <div class="modal-content">
-            <h3>Are you sure?</h3>
-            <p id="modal-message">This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button id="modal-cancel" class="btn">Cancel</button>
-                <button id="modal-confirm" class="danger-btn">Confirm</button>
+            <div class="modal-header">
+                <h3>Confirm Action</h3>
+                <button class="btn-close" id="close-confirm-modal">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-icon">
+                    <span class="material-icons-round">warning</span>
+                </div>
+                <p id="modal-message">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-text" id="modal-cancel">Cancel</button>
+                <button class="btn btn-danger" id="modal-confirm">Confirm</button>
             </div>
         </div>
     </div>
+
+    <!-- Toast notification container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
 </body>

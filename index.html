@@ -3,77 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackIt - Dashboard</title>
+    <title>TrackIt | Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <h1><span class="material-icons-round">schedule</span> TrackIt</h1>
-        </div>
-        <div class="header-controls">
-            <label class="theme-switch" aria-label="Toggle theme">
-                <input type="checkbox" id="theme-toggle" role="switch" aria-checked="false">
-                <span class="slider">
-                    <span class="icon moon"><span class="material-icons-round">dark_mode</span></span>
-                    <span class="icon sun"><span class="material-icons-round">light_mode</span></span>
-                </span>
-            </label>
-            <a href="analytics.html" class="btn"><span class="material-icons-round">analytics</span> Analytics</a>
-        </div>
-    </header>
+    <!-- App Wrapper -->
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-navbar" id="top-navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <span class="material-icons-round logo-icon">track_changes</span>
+                    <h1>TrackIt</h1>
+                </div>
+            </div>
+            
+            <div class="navbar-center">
+                <div class="navbar-menu" id="navbar-menu">
+                    <a href="index.html" class="menu-item active">
+                        <span class="material-icons-round">dashboard</span>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                    <a href="manage.html" class="menu-item">
+                        <span class="material-icons-round">playlist_add_check</span>
+                        <span class="menu-text">Manage</span>
+                    </a>
+                    <a href="analytics.html" class="menu-item">
+                        <span class="material-icons-round">insights</span>
+                        <span class="menu-text">Analytics</span>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <span class="material-icons-round">settings</span>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                    <a href="about.html" class="menu-item">
+                        <span class="material-icons-round">help_outline</span>
+                        <span class="menu-text">About</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="theme-toggle">
+                        <input type="checkbox" id="theme-toggle">
+                        <div class="slider round">
+                            <span class="material-icons-round sun-icon">light_mode</span>
+                            <span class="material-icons-round moon-icon">dark_mode</span>
+                        </div>
+                    </label>
+                </div>
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <span class="material-icons-round">menu</span>
+                </button>
+            </div>
+        </nav>
 
-    <main class="dashboard">
-        <div class="action-bar">
-            <a href="manage.html" class="btn primary-btn"><span class="material-icons-round">add</span> Add Habit</a>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h2>Dashboard</h2>
+                    <p class="subtitle" id="today-date">Today's Date</p>
+                </div>
+                <div class="header-actions">
+                    <div class="dropdown">
+                        <button id="dropdown-toggle" class="btn btn-outline btn-with-icon">
+                            <span class="material-icons-round">filter_list</span>
+                            <span id="filter-text">All Habits</span>
+                        </button>
+                        <div class="dropdown-menu" id="dropdown-menu">
+                            <a href="#" class="dropdown-item active" data-filter="all">All Habits</a>
+                            <a href="#" class="dropdown-item" data-filter="completed">Completed</a>
+                            <a href="#" class="dropdown-item" data-filter="pending">Pending</a>
+                        </div>
+                    </div>
+                    <button id="quick-add" class="btn btn-primary btn-with-icon">
+                        <span class="material-icons-round">add</span>
+                        <span>Add Habit</span>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons-round">checklist</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-habits">0</h3>
+                        <p>Total Habits</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons-round">local_fire_department</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="current-streak">0</h3>
+                        <p>Best Streak</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons-round">bar_chart</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="completion-rate">0%</h3>
+                        <p>Completion Rate</p>
+                    </div>
+                </div>
+            </div>
 
-        <div id="habits-container" class="habits-grid">
-            <!-- Habits will be populated here by JavaScript -->
-        </div>
-        
-        <div class="empty-state" id="empty-state-message">
-            <div class="empty-icon"><span class="material-icons-round">lightbulb</span></div>
-            <p>No habits added yet. Click "Add Habit" to get started!</p>
-        </div>
-    </main>
+            <section class="habits-section">
+                <div id="habits-container" class="habits-container">
+                    <!-- Habits will be inserted here -->
+                </div>
+                <div id="empty-state-message" class="empty-state">
+                    <div class="empty-icon">
+                        <span class="material-icons-round">playlist_add</span>
+                    </div>
+                    <h3>No habits yet</h3>
+                    <p>Start tracking your habits by adding your first one.</p>
+                    <button id="empty-add-btn" class="btn btn-primary btn-lg">
+                        <span class="material-icons-round">add</span>
+                        <span>Add Your First Habit</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
 
-    <footer>
-        <p>© 2025 TrackIt</p>
-        <div class="footer-links">
-            <a href="settings.html"><span class="material-icons-round">settings</span> Settings</a>
-            <a href="about.html"><span class="material-icons-round">info</span> About</a>
+    <!-- Quick Add Modal -->
+    <div class="modal" id="quick-add-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Habit</h3>
+                <button id="close-modal" class="btn-close">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="habit-name">Habit Name</label>
+                    <input type="text" id="habit-name" class="form-control" placeholder="e.g., Morning Meditation">
+                </div>
+                <div class="form-group">
+                    <label for="habit-category">Category (optional)</label>
+                    <select id="habit-category" class="form-control">
+                        <option value="">Select a category</option>
+                        <option value="health">Health & Fitness</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="self-care">Self Care</option>
+                        <option value="learning">Learning</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-add" class="btn btn-outline">Cancel</button>
+                <button id="confirm-add" class="btn btn-primary">Add Habit</button>
+            </div>
         </div>
-    </footer>
+    </div>
 
     <!-- Template for habit cards -->
     <template id="habit-card-template">
         <div class="habit-card">
+            <div class="habit-header">
+                <span class="habit-category-badge"></span>
+                <div class="today-checkbox">
+                    <input type="checkbox" id="checkbox-today">
+                    <label for="checkbox-today">Today</label>
+                </div>
+            </div>
             <h3 class="habit-name"></h3>
             <div class="habit-status">
-                <label class="checkbox-container">
-                    <input type="checkbox" class="today-checkbox">
-                    <span class="checkmark"></span>
-                    <span>Today Done</span>
-                </label>
-                <div class="streak"><span class="material-icons-round">local_fire_department</span> <span class="streak-count">0</span>-day streak</div>
+                <div class="status-icon">
+                    <span class="material-icons-round">local_fire_department</span>
+                </div>
+                <span class="streak-count">0</span>
+                <span class="streak-label">day streak</span>
+            </div>
+            <div class="streak-container">
+                <div class="streak-label">Last 7 days:</div>
             </div>
             <div class="week-tracker">
-                <div class="day-labels">
-                    <span>M</span>
-                    <span>T</span>
-                    <span>W</span>
-                    <span>T</span>
-                    <span>F</span>
-                    <span>S</span>
-                    <span>S</span>
+                <div class="day-dots">
+                    <!-- Day dots will be inserted here -->
                 </div>
-                <div class="day-dots"></div>
             </div>
         </div>
     </template>
+
+    <!-- Confirmation modal template -->
+    <div class="modal" id="confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Action</h3>
+                <button id="close-confirm-modal" class="btn-close">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-cancel" class="btn btn-outline">Cancel</button>
+                <button id="modal-confirm" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
 </body>

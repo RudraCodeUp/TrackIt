@@ -3,58 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackIt - About</title>
+    <title>TrackIt | About</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="page-header">
-            <a href="index.html" class="back-btn">← Back</a>
-            <h1>About TrackIt </h1>
-        </div>
-    </header>
+    <!-- App Wrapper -->
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-navbar" id="top-navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <span class="material-icons-round logo-icon">track_changes</span>
+                    <h1>TrackIt</h1>
+                </div>
+            </div>
+            
+            <div class="navbar-center">
+                <div class="navbar-menu" id="navbar-menu">
+                    <a href="index.html" class="menu-item">
+                        <span class="material-icons-round">dashboard</span>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                    <a href="manage.html" class="menu-item">
+                        <span class="material-icons-round">playlist_add_check</span>
+                        <span class="menu-text">Manage</span>
+                    </a>
+                    <a href="analytics.html" class="menu-item">
+                        <span class="material-icons-round">insights</span>
+                        <span class="menu-text">Analytics</span>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <span class="material-icons-round">settings</span>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                    <a href="about.html" class="menu-item active">
+                        <span class="material-icons-round">help_outline</span>
+                        <span class="menu-text">About</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="theme-toggle">
+                        <input type="checkbox" id="theme-toggle">
+                        <div class="slider round">
+                            <span class="material-icons-round sun-icon">light_mode</span>
+                            <span class="material-icons-round moon-icon">dark_mode</span>
+                        </div>
+                    </label>
+                </div>
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <span class="material-icons-round">menu</span>
+                </button>
+            </div>
+        </nav>
 
-    <main class="about-page">
-        <div class="about-section">
-            <h2>Welcome to TrackIt!</h2>
-            <p>An offline habit & study tracker designed to help you stay consistent and visualize your progress.</p>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h2>About TrackIt</h2>
+                    <p class="subtitle">Learn about the app and how to use it</p>
+                </div>
+            </header>
+            
+            <div class="about-hero">
+                <div class="about-logo">
+                    <span class="material-icons-round">track_changes</span>
+                    <h1>TrackIt</h1>
+                </div>
+                <p class="about-tagline">Build better habits, one day at a time</p>
+                <p class="about-version">Version 1.0.0</p>
+            </div>
+            
+            <div class="about-sections">
+                <div class="about-section">
+                    <div class="section-icon">
+                        <span class="material-icons-round">lightbulb</span>
+                    </div>
+                    <div class="section-content">
+                        <h3>What is TrackIt?</h3>
+                        <p>TrackIt is a simple but powerful habit tracking application designed to help you build consistent routines and achieve your goals. It works entirely in your browser and saves all data locally on your device.</p>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <div class="section-icon">
+                        <span class="material-icons-round">school</span>
+                    </div>
+                    <div class="section-content">
+                        <h3>How to Use TrackIt</h3>
+                        <ul class="how-to-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Create Habits</h4>
+                                    <p>Add habits you want to track from the Dashboard or Manage Habits page.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Track Daily Progress</h4>
+                                    <p>Check off your habits as you complete them each day.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Review Your Analytics</h4>
+                                    <p>See your progress over time with visual charts and statistics.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Stay Consistent</h4>
+                                    <p>Build streaks and achieve long-term habit formation.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <div class="section-icon">
+                        <span class="material-icons-round">stars</span>
+                    </div>
+                    <div class="section-content">
+                        <h3>Features</h3>
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <span class="material-icons-round">local_fire_department</span>
+                                <p>Track Streaks</p>
+                            </div>
+                            <div class="feature-item">
+                                <span class="material-icons-round">bar_chart</span>
+                                <p>Visualize Progress</p>
+                            </div>
+                            <div class="feature-item">
+                                <span class="material-icons-round">category</span>
+                                <p>Categorize Habits</p>
+                            </div>
+                            <div class="feature-item">
+                                <span class="material-icons-round">dark_mode</span>
+                                <p>Dark Mode</p>
+                            </div>
+                            <div class="feature-item">
+                                <span class="material-icons-round">devices</span>
+                                <p>Works Offline</p>
+                            </div>
+                            <div class="feature-item">
+                                <span class="material-icons-round">save_alt</span>
+                                <p>Data Export</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <div class="section-icon">
+                        <span class="material-icons-round">psychology</span>
+                    </div>
+                    <div class="section-content">
+                        <h3>Habit Building Tips</h3>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <h4>Start Small</h4>
+                                <p>Begin with easy habits that take less than two minutes to complete.</p>
+                            </div>
+                            <div class="tip-item">
+                                <h4>Stack Habits</h4>
+                                <p>Attach new habits to existing routines to make them easier to remember.</p>
+                            </div>
+                            <div class="tip-item">
+                                <h4>Environment Matters</h4>
+                                <p>Design your environment to make good habits obvious and easy.</p>
+                            </div>
+                            <div class="tip-item">
+                                <h4>Never Miss Twice</h4>
+                                <p>If you miss one day, try not to miss the next one to maintain momentum.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <div class="section-icon">
+                        <span class="material-icons-round">contact_support</span>
+                    </div>
+                    <div class="section-content">
+                        <h3>Frequently Asked Questions</h3>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    Is my data secure?
+                                    <span class="material-icons-round">expand_more</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>All your data is stored locally on your device and never sent to any server. For safekeeping, you can export your data regularly from the Settings page.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    Can I use TrackIt on multiple devices?
+                                    <span class="material-icons-round">expand_more</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>You can export your data from one device and import it to another using the data management options in Settings.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    How do I delete a habit?
+                                    <span class="material-icons-round">expand_more</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p>Go to the Manage Habits page, find the habit you want to remove, and click the delete button.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-        <div class="about-section">
-            <h2> How to Use</h2>
-            <ol>
-                <li>Go to Add Habits and create one.</li>
-                <li>Return to Dashboard to mark progress.</li>
-                <li>Check your charts in Analytics.</li>
-                <li>Customize appearance in Settings.</li>
-            </ol>
-        </div>
-
-        <div class="about-section">
-            <h2>Features</h2>
-            <ul>
-                <li>Offline Storage</li>
-                <li>Theme Toggle</li>
-                <li>Charts & Streaks</li>
-                <li>No login needed</li>
-            </ul>
-        </div>
-
-        <div class="about-section">
-            <h2>Future Plans</h2>
-            <p>PWA version, reminders, AI coach, and more!</p>
-        </div>
-    </main>
-
-    <footer>
-        <p>2025 TrackIt</p>
-        <div class="footer-links">
-            <a href="index.html">Dashboard</a>
-            <a href="settings.html">Settings</a>
-        </div>
-    </footer>
+    <!-- Toast notification container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
+    <script>
+        // Setup accordion functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('active');
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('show');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -3,64 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackIt - Settings</title>
+    <title>TrackIt | Settings</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="page-header">
-            <a href="index.html" class="back-btn">← Back</a>
-            <h1>Settings </h1>
-        </div>
-    </header>
-
-    <main class="settings-page">
-        <div class="settings-section">
-            <h2>Theme</h2>
-            <div class="theme-options">
-                <button class="theme-btn" data-theme="light"> Light</button>
-                <button class="theme-btn" data-theme="dark"> Dark</button>
+    <!-- App Wrapper -->
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-navbar" id="top-navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <span class="material-icons-round logo-icon">track_changes</span>
+                    <h1>TrackIt</h1>
+                </div>
             </div>
-        </div>
-
-        <div class="settings-section">
-            <h2>Data</h2>
-            <div class="data-options">
-                <button id="export-btn" class="btn">⬇ Export Data</button>
-                <button id="import-btn" class="btn">⬆ Import Data</button>
-                <input type="file" id="import-file" accept=".json" hidden>
-                <button id="clear-data-btn" class="danger-btn">🧹 Clear All Data</button>
+            
+            <div class="navbar-center">
+                <div class="navbar-menu" id="navbar-menu">
+                    <a href="index.html" class="menu-item">
+                        <span class="material-icons-round">dashboard</span>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                    <a href="manage.html" class="menu-item">
+                        <span class="material-icons-round">playlist_add_check</span>
+                        <span class="menu-text">Manage</span>
+                    </a>
+                    <a href="analytics.html" class="menu-item">
+                        <span class="material-icons-round">insights</span>
+                        <span class="menu-text">Analytics</span>
+                    </a>
+                    <a href="settings.html" class="menu-item active">
+                        <span class="material-icons-round">settings</span>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                    <a href="about.html" class="menu-item">
+                        <span class="material-icons-round">help_outline</span>
+                        <span class="menu-text">About</span>
+                    </a>
+                </div>
             </div>
-        </div>
+            
+            <div class="navbar-right">
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="theme-toggle">
+                        <input type="checkbox" id="theme-toggle">
+                        <div class="slider round">
+                            <span class="material-icons-round sun-icon">light_mode</span>
+                            <span class="material-icons-round moon-icon">dark_mode</span>
+                        </div>
+                    </label>
+                </div>
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <span class="material-icons-round">menu</span>
+                </button>
+            </div>
+        </nav>
 
-        <div class="settings-section">
-            <h2>About</h2>
-            <p>Version: 1.0 Offline Beta</p>
-            <p>Built with lovesign using HTML, CSS, and JavaScript</p>
-        </div>
-    </main>
-
-    <footer>
-        <p>© 2025 TrackIt</p>
-        <div class="footer-links">
-            <a href="index.html">Dashboard </a>
-            <a href="about.html">About </a>
-        </div>
-    </footer>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h2>Settings</h2>
+                    <p class="subtitle">Customize your experience</p>
+                </div>
+            </header>
+            
+            <div class="settings-container">
+                <div class="settings-nav">
+                    <button class="settings-nav-item active" data-section="appearance">
+                        <span class="material-icons-round">palette</span>
+                        Appearance
+                    </button>
+                    <button class="settings-nav-item" data-section="preferences">
+                        <span class="material-icons-round">tune</span>
+                        Preferences
+                    </button>
+                    <button class="settings-nav-item" data-section="data">
+                        <span class="material-icons-round">storage</span>
+                        Data Management
+                    </button>
+                    <button class="settings-nav-item" data-section="about">
+                        <span class="material-icons-round">info</span>
+                        About
+                    </button>
+                </div>
+                
+                <div class="settings-content">
+                    <div id="appearance" class="settings-section active">
+                        <h3 class="section-title">
+                            <span class="material-icons-round">palette</span>
+                            Appearance
+                        </h3>
+                        
+                        <div class="setting-group">
+                            <h4>Theme</h4>
+                            <p>Choose how TrackIt looks to you</p>
+                            <div class="theme-options">
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="light" checked>
+                                    <div class="theme-preview light">
+                                        <span class="material-icons-round">light_mode</span>
+                                        <span>Light</span>
+                                    </div>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="dark">
+                                    <div class="theme-preview dark">
+                                        <span class="material-icons-round">dark_mode</span>
+                                        <span>Dark</span>
+                                    </div>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="system">
+                                    <div class="theme-preview system">
+                                        <span class="material-icons-round">devices</span>
+                                        <span>System</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <h4>Layout</h4>
+                            <p>Choose how habits are displayed</p>
+                            <div class="layout-options">
+                                <label class="layout-option">
+                                    <input type="radio" name="layout" value="grid" checked>
+                                    <div class="layout-preview">
+                                        <span class="material-icons-round">grid_view</span>
+                                        <span>Grid</span>
+                                    </div>
+                                </label>
+                                <label class="layout-option">
+                                    <input type="radio" name="layout" value="list">
+                                    <div class="layout-preview">
+                                        <span class="material-icons-round">view_list</span>
+                                        <span>List</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <h4>Accent Color</h4>
+                            <p>Choose your preferred accent color</p>
+                            <div class="color-options">
+                                <label class="color-option">
+                                    <input type="radio" name="color" value="blue" checked>
+                                    <div class="color-preview blue"></div>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="color" value="green">
+                                    <div class="color-preview green"></div>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="color" value="purple">
+                                    <div class="color-preview purple"></div>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="color" value="orange">
+                                    <div class="color-preview orange"></div>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="color" value="red">
+                                    <div class="color-preview red"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="preferences" class="settings-section">
+                        <h3 class="section-title">
+                            <span class="material-icons-round">tune</span>
+                            Preferences
+                        </h3>
+                        
+                        <div class="setting-group">
+                            <h4>Week Start</h4>
+                            <p>Choose which day your week starts on</p>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="weekStart" value="monday" checked>
+                                    <span>Monday</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="weekStart" value="sunday">
+                                    <span>Sunday</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div>
+                                <h4>Show Reminders</h4>
+                                <p>Receive browser notifications for incomplete habits</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="show-reminders" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div>
+                                <h4>Show Achievements</h4>
+                                <p>Display achievements when you reach milestones</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="show-achievements" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="data" class="settings-section">
+                        <h3 class="section-title">
+                            <span class="material-icons-round">storage</span>
+                            Data Management
+                        </h3>
+                        
+                        <div class="setting-group">
+                            <h4>Backup and Restore</h4>
+                            <p>Export your data or import from a backup file</p>
+                            <div class="button-group">
+                                <button id="export-btn" class="btn btn-outline btn-with-icon">
+                                    <span class="material-icons-round">file_download</span>
+                                    Export Data
+                                </button>
+                                <button id="import-btn" class="btn btn-outline btn-with-icon">
+                                    <span class="material-icons-round">file_upload</span>
+                                    Import Data
+                                </button>
+                                <input type="file" id="import-file" accept=".json" hidden>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group danger-zone">
+                            <h4>Danger Zone</h4>
+                            <p>Clear all your data and reset the application</p>
+                            <button id="clear-data-btn" class="btn btn-danger btn-with-icon">
+                                <span class="material-icons-round">delete_forever</span>
+                                Clear All Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="about" class="settings-section">
+                        <h3 class="section-title">
+                            <span class="material-icons-round">info</span>
+                            About TrackIt
+                        </h3>
+                        
+                        <div class="setting-group">
+                            <div class="about-info">
+                                <div class="app-logo">
+                                    <span class="material-icons-round">track_changes</span>
+                                    <h2>TrackIt</h2>
+                                </div>
+                                <p>Version 1.0.0</p>
+                                <p>A simple habit tracking application to help you build better habits.</p>
+                                <p>© 2025 TrackIt</p>
+                                
+                                <a href="about.html" class="btn btn-outline btn-with-icon">
+                                    <span class="material-icons-round">help_outline</span>
+                                    View Full About Page
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <!-- Confirmation modal template -->
-    <div id="confirmation-modal" class="modal hidden">
+    <div class="modal" id="confirmation-modal">
         <div class="modal-content">
-            <h3>Are you sure?</h3>
-            <p id="modal-message">This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button id="modal-cancel" class="btn">Cancel</button>
-                <button id="modal-confirm" class="danger-btn">Confirm</button>
+            <div class="modal-header">
+                <h3>Confirm Action</h3>
+                <button class="btn-close" id="close-confirm">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-icon">
+                    <span class="material-icons-round">warning</span>
+                </div>
+                <p id="modal-message">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-text" id="modal-cancel">Cancel</button>
+                <button class="btn btn-danger" id="modal-confirm">Confirm</button>
             </div>
         </div>
     </div>
 
+    <!-- Toast notification container -->
+    <div class="toast-container" id="toast-container"></div>
+
     <script src="script.js"></script>
+    <script>
+        // Settings page specific script
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup settings navigation
+            const navItems = document.querySelectorAll('.settings-nav-item');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show corresponding section
+                    const sectionId = item.dataset.section;
+                    sections.forEach(section => {
+                        section.classList.toggle('active', section.id === sectionId);
+                    });
+                });
+            });
+            
+            // Set initial active theme based on app data
+            const themeInputs = document.querySelectorAll('input[name="theme"]');
+            themeInputs.forEach(input => {
+                if (input.value === appData.theme) {
+                    input.checked = true;
+                }
+                
+                input.addEventListener('change', () => {
+                    if (input.checked) {
+                        applyTheme(input.value);
+                        appData.theme = input.value;
+                        saveToLocalStorage();
+                        
+                        // Update theme toggle in sidebar
+                        if (domElements.themeToggle) {
+                            domElements.themeToggle.checked = input.value === 'dark';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
