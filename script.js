@@ -1515,11 +1515,14 @@ function renderWeeklyChart(chartType = 'bar_chart') {
         const chartContainer = document.createElement('div');
         chartContainer.classList.add('bar-chart');
         
-        const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         const weekDates = getLastSevenDays();
         
-        weekDays.forEach((day, index) => {
-            const date = weekDates[index];
+        // Process each actual date
+        weekDates.forEach((date, index) => {
+            // Get the actual day name for this date
+            const dateObj = new Date(date);
+            const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+            
             const completedCount = appData.habits.filter(h => h.history && h.history[date]).length;
             const percentage = appData.habits.length > 0 
                 ? (completedCount / appData.habits.length) * 100 
@@ -1532,7 +1535,7 @@ function renderWeeklyChart(chartType = 'bar_chart') {
                 <div class="chart-bar-container">
                     <div class="chart-bar" style="height: ${percentage}%"></div>
                 </div>
-                <div class="chart-label">${day}</div>
+                <div class="chart-label">${dayName}</div>
                 <div class="chart-value">${Math.round(percentage)}%</div>
             `;
             
@@ -2300,7 +2303,7 @@ function initMobileNavbar() {
     window.addEventListener('resize', updateMobileNavState);
 }
 
-// Add function to update mobile navbar state based on viewport width
+// Enhanced function to properly handle responsive state transitions
 function updateMobileNavState() {
     const navbarMenu = document.getElementById('navbar-menu');
     const isMobile = window.innerWidth < 768;
@@ -2317,15 +2320,21 @@ function updateMobileNavState() {
         document.body.classList.add('mobile-view');
         navbarMenu.classList.add('mobile-menu');
     } else {
-        // On desktop: ensure menu is visible and reset styles
+        // IMPORTANT: On desktop, ALWAYS reset to desktop state regardless of previous state
+        
+        // Remove all mobile-specific classes
+        document.body.classList.remove('mobile-view');
+        navbarMenu.classList.remove('mobile-menu', 'mobile-active');
+        
+        // Reset ALL inline styles that were applied during mobile animations
         navbarMenu.style.display = '';
         navbarMenu.style.opacity = '';
         navbarMenu.style.transform = '';
-        
-        // Remove mobile-specific classes
-        document.body.classList.remove('mobile-view');
-        navbarMenu.classList.remove('mobile-menu', 'mobile-active');
+        navbarMenu.style.flexDirection = '';
     }
+    
+    // Debug logging
+    console.log(`Screen width: ${window.innerWidth}, Mobile view: ${isMobile}`);
 }
 
 // Call this function in your initApp function, after the existing mobile menu setup
