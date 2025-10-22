@@ -1604,6 +1604,7 @@ blockquote {
   color: var(--text-primary);
   font-size: 1rem;
   font-family: 'Inter', sans-serif;
+  padding-left: 20px;
 }
 
 .search-bar input:focus {
