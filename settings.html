@@ -63,218 +63,76 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="main-header">
-                <div class="header-left">
-                    <h2>Settings</h2>
-                    <p class="subtitle">Customize your experience</p>
-                </div>
-            </header>
-            
-            <div class="settings-container">
-                <div class="settings-nav">
-                    <button class="settings-nav-item active" data-section="appearance">
-                        <span class="material-icons-round">palette</span>
-                        Appearance
-                    </button>
-                    <button class="settings-nav-item" data-section="preferences">
-                        <span class="material-icons-round">tune</span>
-                        Preferences
-                    </button>
-                    <button class="settings-nav-item" data-section="data">
-                        <span class="material-icons-round">storage</span>
-                        Data Management
-                    </button>
-                    <button class="settings-nav-item" data-section="about">
-                        <span class="material-icons-round">info</span>
-                        About
-                    </button>
-                </div>
-                
-                <div class="settings-content">
-                    <div id="appearance" class="settings-section active">
-                        <h3 class="section-title">
-                            <span class="material-icons-round">palette</span>
-                            Appearance
-                        </h3>
-                        
-                        <div class="setting-group">
-                            <h4>Theme</h4>
-                            <p>Choose how TrackIt looks to you</p>
-                            <div class="theme-options">
-                                <label class="theme-option">
-                                    <input type="radio" name="theme" value="light" checked>
-                                    <div class="theme-preview light">
-                                        <span class="material-icons-round">light_mode</span>
-                                        <span>Light</span>
-                                    </div>
-                                </label>
-                                <label class="theme-option">
-                                    <input type="radio" name="theme" value="dark">
-                                    <div class="theme-preview dark">
-                                        <span class="material-icons-round">dark_mode</span>
-                                        <span>Dark</span>
-                                    </div>
-                                </label>
-                                <label class="theme-option">
-                                    <input type="radio" name="theme" value="system">
-                                    <div class="theme-preview system">
-                                        <span class="material-icons-round">devices</span>
-                                        <span>System</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-group">
-                            <h4>Layout</h4>
-                            <p>Choose how habits are displayed</p>
-                            <div class="layout-options">
-                                <label class="layout-option">
-                                    <input type="radio" name="layout" value="grid" checked>
-                                    <div class="layout-preview">
-                                        <span class="material-icons-round">grid_view</span>
-                                        <span>Grid</span>
-                                    </div>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="layout" value="list">
-                                    <div class="layout-preview">
-                                        <span class="material-icons-round">view_list</span>
-                                        <span>List</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-group">
-                            <h4>Accent Color</h4>
-                            <p>Choose your preferred accent color</p>
-                            <div class="color-options">
-                                <label class="color-option">
-                                    <input type="radio" name="color" value="blue" checked>
-                                    <div class="color-preview blue"></div>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="color" value="green">
-                                    <div class="color-preview green"></div>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="color" value="purple">
-                                    <div class="color-preview purple"></div>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="color" value="orange">
-                                    <div class="color-preview orange"></div>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="color" value="red">
-                                    <div class="color-preview red"></div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="preferences" class="settings-section">
-                        <h3 class="section-title">
-                            <span class="material-icons-round">tune</span>
-                            Preferences
-                        </h3>
-                        
-                        <div class="setting-group">
-                            <h4>Week Start</h4>
-                            <p>Choose which day your week starts on</p>
-                            <div class="radio-group">
-                                <label class="radio-option">
-                                    <input type="radio" name="weekStart" value="monday" checked>
-                                    <span>Monday</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="weekStart" value="sunday">
-                                    <span>Sunday</span>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <h4>Show Reminders</h4>
-                                <p>Receive browser notifications for incomplete habits</p>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="show-reminders" checked>
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <h4>Show Achievements</h4>
-                                <p>Display achievements when you reach milestones</p>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="show-achievements" checked>
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div id="data" class="settings-section">
-                        <h3 class="section-title">
-                            <span class="material-icons-round">storage</span>
-                            Data Management
-                        </h3>
-                        
-                        <div class="setting-group">
-                            <h4>Backup and Restore</h4>
-                            <p>Export your data or import from a backup file</p>
-                            <div class="button-group">
-                                <button id="export-btn" class="btn btn-outline btn-with-icon">
-                                    <span class="material-icons-round">file_download</span>
-                                    Export Data
-                                </button>
-                                <button id="import-btn" class="btn btn-outline btn-with-icon">
-                                    <span class="material-icons-round">file_upload</span>
-                                    Import Data
-                                </button>
-                                <input type="file" id="import-file" accept=".json" hidden>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-group danger-zone">
-                            <h4>Danger Zone</h4>
-                            <p>Clear all your data and reset the application</p>
-                            <button id="clear-data-btn" class="btn btn-danger btn-with-icon">
-                                <span class="material-icons-round">delete_forever</span>
-                                Clear All Data
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div id="about" class="settings-section">
-                        <h3 class="section-title">
-                            <span class="material-icons-round">info</span>
-                            About TrackIt
-                        </h3>
-                        
-                        <div class="setting-group">
-                            <div class="about-info">
-                                <div class="app-logo">
-                                    <span class="material-icons-round">track_changes</span>
-                                    <h2>TrackIt</h2>
-                                </div>
-                                <p>Version 1.0.0</p>
-                                <p>A simple habit tracking application to help you build better habits.</p>
-                                <p>© 2025 TrackIt</p>
-                                
-                                <a href="about.html" class="btn btn-outline btn-with-icon">
-                                    <span class="material-icons-round">help_outline</span>
-                                    View Full About Page
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div class="main-header">
+            <div class="header-left">
+              <h2>Settings</h2>
+              <p class="subtitle">Customize your habit tracking experience</p>
             </div>
+          </div>
+          
+          <!-- General Settings -->
+          <div class="settings-section">
+            <h3>General Settings</h3>
+            
+            <div class="setting-item">
+              <div class="setting-label">
+                <h4>Theme</h4>
+                <div class="setting-description">Choose between light and dark mode</div>
+              </div>
+              <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="theme-toggle">
+                  <input type="checkbox" id="theme-toggle">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="setting-item">
+              <div class="setting-label">
+                <h4>Week Start Day</h4>
+                <div class="setting-description">Choose which day your week starts on</div>
+              </div>
+              <select class="settings-select" id="week-start-day">
+                <option value="1">Monday</option>
+                <option value="0">Sunday</option>
+              </select>
+            </div>
+            
+            <div class="setting-item">
+              <div class="setting-label">
+                <h4>Daily Reminder</h4>
+                <div class="setting-description">Set a time for daily habit reminders</div>
+              </div>
+              <div class="setting-control">
+                <input type="time" class="time-picker" id="reminder-time" value="20:00">
+              </div>
+            </div>
+            
+            <div class="setting-item">
+              <div class="setting-label">
+                <h4>Show Reminders</h4>
+                <div class="setting-description">Enable or disable reminder notifications</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-reminders" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Categories Settings -->
+          <div class="settings-section">
+            <h3>Categories</h3>
+            <div class="categories-list" id="categories-list">
+              <!-- Categories will be dynamically added here -->
+            </div>
+            
+            <div class="add-category-form">
+              <input type="text" class="form-control" id="new-category-name" placeholder="New category name">
+              <input type="color" class="color-picker" id="new-category-color" value="#4CAF50">
+              <button class="btn btn-primary" id="add-category-btn">Add Category</button>
+            </div>
+          </div>
         </main>
     </div>
 

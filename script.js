@@ -513,6 +513,9 @@ function setupDashboardPage() {
     // Set up quick add button and modal
     setupQuickAddModal();
     
+    // Ensure categories are populated in dropdown
+    populateCategoryDropdown();
+    
     // Setup empty state add button
     if (domElements.emptyAddBtn) {
         domElements.emptyAddBtn.addEventListener('click', () => {
@@ -904,6 +907,9 @@ function showQuickAddModal() {
         const nameInput = document.getElementById('habit-name');
         const categorySelect = document.getElementById('habit-category');
         
+        // Populate the category dropdown with latest categories
+        populateCategoryDropdown();
+        
         // Reset form fields and focus on input
         if (nameInput) {
             nameInput.value = '';
@@ -1041,315 +1047,585 @@ function setupConfirmationModal() {
     }
 }
 
-function showConfirmationModal(message, confirmCallback) {
-    if (!domElements.confirmationModal || !domElements.modalMessage || !domElements.modalConfirm) {
-        console.error("Confirmation modal elements not found");
-        return;
+// Fix for the confirmation modal to ensure the callback is executed properly
+function showConfirmationModal(title, message, confirmCallback) {
+    // Create a new modal each time to avoid event handling issues
+    let existingModal = document.getElementById('confirmation-modal');
+    if (existingModal) {
+        existingModal.remove();
     }
     
-    domElements.modalMessage.textContent = message;
+    const modal = document.createElement('div');
+    modal.id = 'confirmation-modal';
+    modal.className = 'modal';
     
-    // Remove old event listener and add new one
-    const newConfirmBtn = domElements.modalConfirm.cloneNode(true);
-    domElements.modalConfirm.parentNode.replaceChild(newConfirmBtn, domElements.modalConfirm);
-    domElements.modalConfirm = newConfirmBtn;
+    // Insert content directly into the HTML to avoid DOM selection issues
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>${title}</h3>
+                <button class="btn-close"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>${message}</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                <button class="btn btn-danger" id="confirm-btn">Confirm</button>
+            </div>
+        </div>
+    `;
     
-    domElements.modalConfirm.addEventListener('click', () => {
-        confirmCallback();
-        domElements.confirmationModal.classList.remove('show');
-    });
+    document.body.appendChild(modal);
     
-    domElements.confirmationModal.classList.add('show');
-}
-
-// Show toast notification
-function showToast(message, type = 'info', duration = 3000) {
-    if (!domElements.toastContainer) {
-        console.error("Toast container not found");
-        return;
-    }
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    
-    const icon = document.createElement('div');
-    icon.className = 'toast-icon';
-    
-    // Set icon based on type
-    let iconClass;
-    switch (type) {
-        case 'success':
-            iconClass = 'fas fa-check-circle';
-            break;
-        case 'error':
-            iconClass = 'fas fa-exclamation-circle';
-            break;
-        case 'warning':
-            iconClass = 'fas fa-exclamation-triangle';
-            break;
-        default:
-            iconClass = 'fas fa-info-circle';
-    }
-    
-    icon.innerHTML = `<i class="${iconClass}"></i>`;
-    
-    const content = document.createElement('div');
-    content.className = 'toast-content';
-    content.textContent = message;
-    
-    toast.appendChild(icon);
-    toast.appendChild(content);
-    domElements.toastContainer.appendChild(toast);
-    
-    // Show the toast (using setTimeout to ensure CSS transition works)
+    // Show the modal after a tiny delay to ensure proper rendering
     setTimeout(() => {
-        toast.classList.add('show');
+        modal.classList.add('show');
     }, 10);
     
-    // Remove after duration
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            if (toast.parentNode === domElements.toastContainer) {
-                domElements.toastContainer.removeChild(toast);
-            }
-        }, 300); // Match the CSS transition time
-    }, duration);
+    // Define close function
+    const closeModal = () => {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300); // Match transition time
+    };
+    
+    // Set up event handlers with direct references
+    modal.querySelector('.btn-close').addEventListener('click', closeModal);
+    modal.querySelector('#cancel-btn').addEventListener('click', closeModal);
+    modal.querySelector('#confirm-btn').addEventListener('click', () => {
+        closeModal();
+        // Use a short timeout to ensure modal is closed before action
+        setTimeout(() => confirmCallback(), 50);
+    });
 }
 
-// ===== MANAGE PAGE =====
+// Add this function to fix the settings page functionality
 
-function setupManagePage() {
-    console.log("Setting up manage habits page");
+function setupSettingsPage() {
+    console.log("Setting up settings page");
     
-    // Render habits list for management
-    renderManageHabitsList();
+    // Get all settings elements
+    const themeToggle = document.getElementById('theme-toggle');
+    const weekStartDay = document.getElementById('week-start-day');
+    const reminderTime = document.getElementById('reminder-time');
+    const showReminders = document.getElementById('show-reminders');
+    const categoriesList = document.getElementById('categories-list');
+    const newCategoryName = document.getElementById('new-category-name');
+    const newCategoryColor = document.getElementById('new-category-color');
+    const addCategoryBtn = document.getElementById('add-category-btn');
     
-    // Set up search functionality
-    setupHabitSearch();
+    // Set initial values from appData
+    if (themeToggle) {
+        themeToggle.checked = appData.theme === 'dark';
+    }
     
-    // Set up "Add Habit" button
-    if (domElements.addHabitButton) {
-        domElements.addHabitButton.addEventListener('click', () => {
-            // Show quick add modal if it exists, otherwise focus on input
-            if (document.getElementById('quick-add-modal')) {
-                showQuickAddModal();
-            } else if (domElements.newHabitInput) {
-                domElements.newHabitInput.focus();
-            }
+    if (weekStartDay) {
+        weekStartDay.value = appData.settings.weekStartsOn.toString();
+    }
+    
+    if (reminderTime) {
+        reminderTime.value = appData.settings.reminderTime;
+    }
+    
+    if (showReminders) {
+        showReminders.checked = appData.settings.showReminders;
+    }
+    
+    // Add event listeners for settings changes
+    if (themeToggle) {
+        themeToggle.addEventListener('change', () => {
+            const newTheme = themeToggle.checked ? 'dark' : 'light';
+            document.body.classList.toggle('dark-theme', themeToggle.checked);
+            appData.theme = newTheme;
+            saveToLocalStorage();
         });
     }
     
-    // Set up add habit form
-    if (domElements.addNewHabitBtn && domElements.newHabitInput) {
-        domElements.addNewHabitBtn.addEventListener('click', addHabitFromManagePage);
+    if (weekStartDay) {
+        weekStartDay.addEventListener('change', () => {
+            appData.settings.weekStartsOn = parseInt(weekStartDay.value);
+            saveToLocalStorage();
+            showToast('Week start day updated', 'success');
+        });
+    }
+    
+    if (reminderTime) {
+        reminderTime.addEventListener('change', () => {
+            appData.settings.reminderTime = reminderTime.value;
+            saveToLocalStorage();
+            showToast('Reminder time updated', 'success');
+        });
+    }
+    
+    if (showReminders) {
+        showReminders.addEventListener('change', () => {
+            appData.settings.showReminders = showReminders.checked;
+            saveToLocalStorage();
+            showToast('Reminder settings updated', 'success');
+        });
+    }
+    
+    // Render categories list
+    renderCategoriesList();
+    
+    // Add category button functionality
+    if (addCategoryBtn) {
+        addCategoryBtn.addEventListener('click', addNewCategory);
+    }
+    
+    // Force CSS styles to apply
+    forceStylesToApply();
+    
+    console.log("Settings page setup complete");
+}
+
+// Function to render the categories list
+function renderCategoriesList() {
+    const categoriesList = document.getElementById('categories-list');
+    if (!categoriesList) return;
+    
+    categoriesList.innerHTML = '';
+    
+    appData.categories.forEach(category => {
+        const categoryItem = document.createElement('div');
+        categoryItem.className = 'category-item';
         
-        // Also handle Enter key
-        domElements.newHabitInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                addHabitFromManagePage();
-            }
-        });
-    }
-    
-    // Set up reset all button
-    if (domElements.resetAllButton) {
-        domElements.resetAllButton.addEventListener('click', () => {
-            showConfirmationModal(
-                'Are you sure you want to delete all habits? This cannot be undone.',
-                resetAllHabits
-            );
-        });
-    }
+        categoryItem.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                <div class="category-color" style="background-color: ${category.color}"></div>
+                <div class="category-name">${category.name}</div>
+            </div>
+            <div class="category-actions">
+                <button class="btn btn-sm btn-edit" data-id="${category.id}" title="Edit">
+                    <span class="material-icons-round">edit</span>
+                </button>
+                <button class="btn btn-sm btn-delete" data-id="${category.id}" title="Delete">
+                    <span class="material-icons-round">delete</span>
+                </button>
+            </div>
+        `;
+        
+        categoriesList.appendChild(categoryItem);
+        
+        // Add event listeners for edit and delete buttons
+        const editBtn = categoryItem.querySelector('.btn-edit');
+        const deleteBtn = categoryItem.querySelector('.btn-delete');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', () => editCategory(category.id));
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => deleteCategory(category.id));
+        }
+    });
 }
 
-// Render the habits list on the manage page
-function renderManageHabitsList() {
-    const habitsList = document.getElementById('habits-list');
-    if (!habitsList) return;
+// Function to add a new category
+function addNewCategory() {
+    console.log("Adding new category");
+    const newCategoryName = document.getElementById('new-category-name');
+    const newCategoryColor = document.getElementById('new-category-color');
     
-    // Clear current list
-    habitsList.innerHTML = '';
-    
-    // Show message if no habits
-    if (appData.habits.length === 0) {
-        const emptyMessage = document.createElement('div');
-        emptyMessage.className = 'empty-state';
-        emptyMessage.innerHTML = '<p>No habits added yet. Add your first habit above.</p>';
-        habitsList.appendChild(emptyMessage);
+    if (!newCategoryName || !newCategoryColor) {
+        console.error("Category form elements not found");
         return;
     }
     
-    // Get habit template
-    const template = document.getElementById('habit-item-template');
+    const name = newCategoryName.value.trim();
+    const color = newCategoryColor.value;
     
-    // If no template, create items directly
-    if (!template) {
-        appData.habits.forEach(habit => {
-            const habitItem = document.createElement('div');
-            habitItem.className = 'habit-item';
-            
-            // Set category border if available
-            if (habit.category) {
-                const category = appData.categories.find(c => c.id === habit.category);
-                if (category) {
-                    habitItem.style.borderLeftColor = category.color;
-                }
-            }
-            
-            habitItem.innerHTML = `
-                <span class="habit-name">${habit.name}</span>
-                <div class="habit-actions">
-                    <button class="btn btn-outline btn-sm edit-btn">Edit</button>
-                    <button class="btn btn-danger btn-sm delete-btn">Delete</button>
-                </div>
-            `;
-            
-            // Add event listeners
-            habitItem.querySelector('.edit-btn').addEventListener('click', () => editHabit(habit.id));
-            habitItem.querySelector('.delete-btn').addEventListener('click', () => deleteHabit(habit.id));
-            
-            habitsList.appendChild(habitItem);
-        });
-    } else {
-        // Use template for each habit
-        appData.habits.forEach(habit => {
-            const habitItem = document.importNode(template.content, true);
-            
-            // Set habit name
-            habitItem.querySelector('.habit-name').textContent = habit.name;
-            
-            // Add event listeners
-            habitItem.querySelector('.edit-btn').addEventListener('click', () => editHabit(habit.id));
-            habitItem.querySelector('.delete-btn').addEventListener('click', () => deleteHabit(habit.id));
-            
-            // Set category style if available
-            const item = habitItem.querySelector('.habit-item');
-            if (habit.category && item) {
-                const category = appData.categories.find(c => c.id === habit.category);
-                if (category) {
-                    item.style.borderLeftColor = category.color;
-                }
-            }
-            
-            // Add fade-in animation
-            if (item) {
-                item.classList.add('fade-in');
-            }
-            
-            habitsList.appendChild(habitItem);
-        });
+    if (!name) {
+        showToast('Please enter a category name', 'warning');
+        return;
     }
+    
+    // Check for duplicate names
+    const isDuplicate = appData.categories.some(cat => 
+        cat.name.toLowerCase() === name.toLowerCase());
+    
+    if (isDuplicate) {
+        showToast('A category with this name already exists', 'warning');
+        return;
+    }
+    
+    // Create new category
+    const newCategory = {
+        id: 'cat_' + Date.now(),
+        name: name,
+        color: color
+    };
+    
+    // Add to categories array
+    appData.categories.push(newCategory);
+    
+    // Save to localStorage
+    saveToLocalStorage();
+    
+    // Clear form
+    newCategoryName.value = '';
+    
+    // Re-render categories list
+    renderCategoriesList();
+    
+    // Show success message
+    showToast(`Category "${name}" added successfully`, 'success');
 }
 
-// Add new habit from manage page
-function addHabitFromManagePage() {
-    if (!domElements.newHabitInput) return;
+// Function to edit a category
+function editCategory(categoryId) {
+    const category = appData.categories.find(cat => cat.id === categoryId);
+    if (!category) return;
     
-    const habitName = domElements.newHabitInput.value.trim();
+    // Create a simple inline edit form
+    const categoryItem = document.querySelector(`.category-item .btn-edit[data-id="${categoryId}"]`).closest('.category-item');
     
-    if (habitName) {
-        // Create new habit
-        const newHabit = {
-            id: 'habit_' + Date.now(),
-            name: habitName,
-            category: '', // Default to no category
-            createdAt: new Date().toISOString(),
-            history: {},
-            trackDays: [0, 1, 2, 3, 4, 5, 6] // Default to all days
-        };
+    const originalContent = categoryItem.innerHTML;
+    
+    categoryItem.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+            <input type="color" class="color-picker" value="${category.color}">
+            <input type="text" class="form-control" value="${category.name}" style="flex: 1;">
+        </div>
+        <div class="category-actions">
+            <button class="btn btn-sm btn-save" title="Save">
+                <span class="material-icons-round">check</span>
+            </button>
+            <button class="btn btn-sm btn-cancel" title="Cancel">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+    `;
+    
+    const colorInput = categoryItem.querySelector('input[type="color"]');
+    const nameInput = categoryItem.querySelector('input[type="text"]');
+    const saveBtn = categoryItem.querySelector('.btn-save');
+    const cancelBtn = categoryItem.querySelector('.btn-cancel');
+    
+    saveBtn.addEventListener('click', () => {
+        const newName = nameInput.value.trim();
+        const newColor = colorInput.value;
         
-        // Add to habits array
-        appData.habits.push(newHabit);
+        if (!newName) {
+            showToast('Category name cannot be empty', 'warning');
+            return;
+        }
+        
+        // Update category
+        category.name = newName;
+        category.color = newColor;
         
         // Save to localStorage
         saveToLocalStorage();
         
-        // Clear input
-        domElements.newHabitInput.value = '';
+        // Re-render categories
+        renderCategoriesList();
         
-        // Show success message
-        showToast(`'${habitName}' added successfully!`, 'success');
+        showToast('Category updated', 'success');
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+        categoryItem.innerHTML = originalContent;
         
-        // Re-render list
-        renderManageHabitsList();
-    } else {
-        showToast('Please enter a habit name', 'warning');
-    }
-}
-
-// Edit habit name
-function editHabit(habitId) {
-    const habit = appData.habits.find(h => h.id === habitId);
-    if (!habit) return;
-    
-    const newName = prompt('Enter new name for habit:', habit.name);
-    
-    if (newName && newName.trim()) {
-        habit.name = newName.trim();
-        saveToLocalStorage();
-        renderManageHabitsList();
-        showToast('Habit renamed successfully!', 'success');
-    }
-}
-
-// Delete habit
-function deleteHabit(habitId) {
-    const habit = appData.habits.find(h => h.id === habitId);
-    if (!habit) return;
-    
-    showConfirmationModal(
-        `Are you sure you want to delete "${habit.name}"? This action cannot be undone.`,
-        () => {
-            appData.habits = appData.habits.filter(h => h.id !== habitId);
-            saveToLocalStorage();
-            renderManageHabitsList();
-            showToast('Habit deleted successfully!', 'success');
+        // Re-add event listeners
+        const editBtn = categoryItem.querySelector('.btn-edit');
+        const deleteBtn = categoryItem.querySelector('.btn-delete');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', () => editCategory(categoryId));
         }
-    );
-}
-
-// Reset all habits
-function resetAllHabits() {
-    appData.habits = [];
-    saveToLocalStorage();
-    renderManageHabitsList();
-    showToast('All habits have been deleted.', 'info');
-}
-
-// Setup habit search functionality
-function setupHabitSearch() {
-    const searchInput = document.getElementById('habit-search');
-    if (!searchInput) return;
-    
-    searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const habitItems = document.querySelectorAll('.habit-item');
         
-        let anyVisible = false;
-        
-        habitItems.forEach(item => {
-            const habitName = item.querySelector('.habit-name').textContent.toLowerCase();
-            const visible = habitName.includes(searchTerm);
-            
-            item.style.display = visible ? '' : 'none';
-            if (visible) anyVisible = true;
-        });
-        
-        // Show "no results" message if needed
-        const noResultsMessage = document.querySelector('.no-results-message');
-        
-        if (!anyVisible) {
-            if (!noResultsMessage) {
-                const message = document.createElement('div');
-                message.className = 'no-results-message';
-                message.innerHTML = '<p>No habits match your search.</p>';
-                document.getElementById('habits-list').appendChild(message);
-            }
-        } else if (noResultsMessage) {
-            noResultsMessage.remove();
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => deleteCategory(categoryId));
         }
     });
+    
+    // Focus the input field
+    nameInput.focus();
+}
+
+// Function to delete a category
+function deleteCategory(categoryId) {
+    // Check if any habits use this category
+    const habitsUsingCategory = appData.habits.filter(h => h.category === categoryId);
+    
+    if (habitsUsingCategory.length > 0) {
+        showConfirmationModal(
+            'Delete Category?', 
+            `This category is used by ${habitsUsingCategory.length} habits. Deleting it will remove the category from these habits. Continue?`,
+            () => {
+                // Update habits to remove this category
+                appData.habits.forEach(habit => {
+                    if (habit.category === categoryId) {
+                        habit.category = '';
+                    }
+                });
+                
+                // Remove the category
+                appData.categories = appData.categories.filter(cat => cat.id !== categoryId);
+                
+                // Save to localStorage
+                saveToLocalStorage();
+                
+                // Re-render categories
+                renderCategoriesList();
+                
+                showToast('Category deleted', 'success');
+            }
+        );
+    } else {
+        // Simple delete without confirmation if no habits use this category
+        appData.categories = appData.categories.filter(cat => cat.id !== categoryId);
+        saveToLocalStorage();
+        renderCategoriesList();
+        showToast('Category deleted', 'success');
+    }
+}
+
+// Update renderManageHabitsList to include proper data-label attributes for mobile display
+// filepath: e:\TrackIt\TrackIt\script.js
+function renderManageHabitsList() {
+    console.log("Rendering manage habits list");
+    
+    const habitsList = document.getElementById('habits-list');
+    if (!habitsList) {
+        console.error("Habits list container not found");
+        return;
+    }
+    
+    // Clear existing content
+    habitsList.innerHTML = '';
+    
+    // Show message if no habits exist
+    if (appData.habits.length === 0) {
+        habitsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <span class="material-icons-round">fact_check</span>
+                </div>
+                <h3>No habits yet</h3>
+                <p>Add your first habit to start tracking</p>
+                <button class="btn btn-primary" id="manage-empty-add-btn">
+                    <span class="material-icons-round">add</span> Add Habit
+                </button>
+            </div>
+        `;
+        
+        // Add event listener to the empty state add button
+        const emptyAddBtn = document.getElementById('manage-empty-add-btn');
+        if (emptyAddBtn) {
+            emptyAddBtn.addEventListener('click', showQuickAddModal);
+        }
+        
+        return;
+    }
+    
+    // Create table for habits
+    const table = document.createElement('table');
+    table.className = 'habits-table';
+    
+    // Add table header
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Habit</th>
+                <th>Category</th>
+                <th>Current Streak</th>
+                <th>Best Streak</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector('tbody');
+    
+    // Sort habits by name for easier browsing
+    const sortedHabits = [...appData.habits].sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Add each habit as a row
+    sortedHabits.forEach(habit => {
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-id', habit.id);
+        
+        // Find category name and color
+        const category = appData.categories.find(c => c.id === habit.category);
+        const categoryName = category ? category.name : 'None';
+        const categoryColor = category ? category.color : '#CCC';
+        
+        // Calculate streaks
+        const currentStreak = calculateCurrentStreak(habit);
+        const bestStreak = calculateStreak(habit);
+        
+        tr.innerHTML = `
+            <td class="habit-name-cell">${habit.name}</td>
+            <td data-label="Category">
+                <span class="category-badge" style="background-color: ${categoryColor}">
+                    ${categoryName}
+                </span>
+            </td>
+            <td data-label="Current Streak">${currentStreak} days</td>
+            <td data-label="Best Streak">${bestStreak} days</td>
+            <td class="actions-cell" data-label="Actions">
+                <button class="btn btn-sm btn-edit" title="Edit">
+                    <span class="material-icons-round">edit</span>
+                </button>
+                <button class="btn btn-sm btn-delete" title="Delete">
+                    <span class="material-icons-round">delete</span>
+                </button>
+            </td>
+        `;
+        
+        tbody.appendChild(tr);
+        
+        // Add event listeners for edit and delete buttons
+        const editBtn = tr.querySelector('.btn-edit');
+        const deleteBtn = tr.querySelector('.btn-delete');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', () => {
+                editHabit(habit.id);
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                showConfirmationModal(
+                    'Delete Habit?',
+                    `Are you sure you want to delete "${habit.name}"? This will remove all tracking history for this habit.`,
+                    () => deleteHabit(habit.id)
+                );
+            });
+        }
+    });
+    
+    habitsList.appendChild(table);
+    
+    // Add animation class to fade in the table
+    table.classList.add('fade-in');
+}
+
+// Setup the Manage Habits page
+function setupManagePage() {
+    console.log("Setting up manage page");
+
+    // Render the list of habits
+    renderManageHabitsList();
+    
+    // Setup the add habit form
+    const addHabitForm = document.querySelector('.add-habit-form');
+    const newHabitInput = document.getElementById('new-habit-input');
+    const addNewHabitBtn = document.getElementById('add-new-habit-btn');
+    
+    if (addHabitForm) {
+        // Form submission handler
+        addHabitForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addHabitFromManagePage();
+        });
+    }
+    
+    if (addNewHabitBtn) {
+        // Button click handler
+        addNewHabitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addHabitFromManagePage();
+        });
+    }
+    
+    // Setup the search functionality
+    const habitSearch = document.getElementById('habit-search');
+    if (habitSearch) {
+        habitSearch.addEventListener('input', function() {
+            filterManageHabitsList(this.value);
+        });
+    }
+    
+    // Setup the reset all button
+    const resetAllBtn = document.getElementById('reset-all-btn');
+    if (resetAllBtn) {
+        resetAllBtn.addEventListener('click', function() {
+            showConfirmationModal(
+                'Reset All Habits?',
+                'This will clear all habit history but keep your habits. This action cannot be undone.',
+                resetAllHabitsHistory
+            );
+        });
+    }
+    
+    // Add habit button for showing modal
+    const addHabitButton = document.getElementById('add-habit-btn');
+    if (addHabitButton) {
+        addHabitButton.addEventListener('click', showQuickAddModal);
+    }
+    
+    console.log("Manage page setup complete");
+}
+
+// Add habit from manage page form
+function addHabitFromManagePage() {
+    const newHabitInput = document.getElementById('new-habit-input');
+    if (!newHabitInput) return;
+    
+    const habitName = newHabitInput.value.trim();
+    
+    if (habitName === '') {
+        showToast('Please enter a habit name', 'warning');
+        return;
+    }
+    
+    // Create new habit
+    const newHabit = {
+        id: 'habit_' + Date.now(),
+        name: habitName,
+        category: '',  // Default to no category
+        createdAt: new Date().toISOString(),
+        history: {},
+        trackDays: [0, 1, 2, 3, 4, 5, 6]  // Track every day by default
+    };
+    
+    // Add to habits array
+    appData.habits.push(newHabit);
+    
+    // Save to localStorage
+    saveToLocalStorage();
+    
+    // Clear input
+    newHabitInput.value = '';
+    
+    // Re-render habits list
+    renderManageHabitsList();
+    
+    // Show success message
+    showToast(`Habit '${habitName}' added successfully`, 'success');
+}
+
+// Filter habits list based on search input
+function filterManageHabitsList(searchTerm) {
+    const rows = document.querySelectorAll('.habits-table tbody tr');
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    
+    rows.forEach(row => {
+        const habitName = row.querySelector('.habit-name-cell').textContent.toLowerCase();
+        
+        if (habitName.includes(lowerSearchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// Reset all habits history
+function resetAllHabitsHistory() {
+    appData.habits.forEach(habit => {
+        habit.history = {};
+    });
+    
+    saveToLocalStorage();
+    renderManageHabitsList();
+    
+    showToast('All habit history has been reset', 'info');
 }
 
 // ===== ANALYTICS PAGE =====
@@ -1447,14 +1723,7 @@ function updateAnalyticsSummary() {
         }
     });
     
-    // Update most consistent habit display
-    if (domElements.mostConsistentElement) {
-        domElements.mostConsistentElement.textContent = mostConsistentHabit 
-            ? `${mostConsistentHabit.name} (${Math.round(highestCompletionRate * 100)}%)` 
-            : 'None';
-    }
-    
-    // Find most active day
+    // Update most active day
     const dayCount = [0, 0, 0, 0, 0, 0, 0]; // Sun, Mon, Tue, Wed, Thu, Fri, Sat
     
     appData.habits.forEach(habit => {
@@ -1737,7 +2006,7 @@ function drawLineChart(ctx, width, height, data) {
     const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
     gradient.addColorStop(0, getComputedStyle(document.documentElement)
         .getPropertyValue('--primary-light')
-        .trim() || 'rgba(85, 112, 241, 0.1)');
+        .trim() || 'rgba(85, 112,241, 0.1)');
     gradient.addColorStop(1, 'rgba(85, 112, 241, 0)');
     
     ctx.beginPath();
@@ -1876,135 +2145,28 @@ function drawStackedAreaChart(ctx, width, height, data) {
     
     ctx.fillStyle = completedGradient;
     ctx.fill();
-    
-    // Draw incomplete area above (to make it look stacked)
-    ctx.beginPath();
-    data.forEach((rate, index) => {
-        const x = padding + (chartWidth * (index / (data.length - 1)));
-        const y = height - padding - (chartHeight * (rate / 100));
-        
-        if (index === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
-    });
-    
-    ctx.lineTo(padding + chartWidth, padding);
-    ctx.lineTo(padding, padding);
-    ctx.closePath();
-    
-    // Fill with different gradient
-    const incompleteGradient = ctx.createLinearGradient(0, padding, 0, height - padding);
-    incompleteGradient.addColorStop(0, getComputedStyle(document.documentElement)
-        .getPropertyValue('--bg-tertiary')
-        .trim() || '#EDF2F7');
-    incompleteGradient.addColorStop(1, 'rgba(237, 242, 247, 0.5)');
-    
-    ctx.fillStyle = incompleteGradient;
-    ctx.fill();
-    
-    // Draw dividing line between areas
-    ctx.beginPath();
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 2;
-    
-    data.forEach((rate, index) => {
-        const x = padding + (chartWidth * (index / (data.length - 1)));
-        const y = height - padding - (chartHeight * (rate / 100));
-        
-        if (index === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
-    });
-    
-    ctx.stroke();
 }
 
-// Setup chart type toggles for analytics page
-function setupChartTypeToggles() {
-    // Weekly chart toggles
-    const weeklyToggleBtns = document.querySelectorAll('.chart-options button[title="Bar Chart"], .chart-options button[title="Pie Chart"]');
-    weeklyToggleBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all buttons in this group
-            weeklyToggleBtns.forEach(b => b.classList.remove('active'));
-            
-            // Add active class to clicked button
-            btn.classList.add('active');
-            
-            // Determine chart type from button icon
-            const chartType = btn.querySelector('.material-icons-round').textContent;
-            renderWeeklyChart(chartType);
-        });
-    });
-
-    // Monthly chart toggles
-    const monthlyToggleBtns = document.querySelectorAll('.chart-options button[title="Line Chart"], .chart-options button[title="Area Chart"]');
-    monthlyToggleBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all buttons in this group
-            monthlyToggleBtns.forEach(b => b.classList.remove('active'));
-            
-            // Add active class to clicked button
-            btn.classList.add('active');
-            
-            // Determine chart type from button icon
-            const chartType = btn.querySelector('.material-icons-round').textContent;
-            renderMonthlyChart(chartType);
-        });
-    });
-}
-
-// Update motivational quote on analytics page
-function updateMotivationalQuote() {
-    if (!domElements.motivationQuote) return;
-    
-    const quotes = [
-        "Success is the sum of small efforts, repeated day in and day out.",
-        "Consistency is what transforms average into excellence.",
-        "Small daily improvements are the key to long-term success.",
-        "Don't break the chain. You're building more than habits; you're building character.",
-        "The secret to getting ahead is getting started.",
-        "Progress is made by daily victories.",
-        "Motivation is what gets you started. Habit is what keeps you going.",
-        "Every accomplishment starts with the decision to try.",
-        "The difference between who you are and who you want to be is what you do.",
-        "Discipline is choosing between what you want now and what you want most."
-    ];
-    
-    // Get a random quote
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    domElements.motivationQuote.textContent = `"${quotes[randomIndex]}"`;
-}
-
-// Calculate current streak (days in a row up to today)
+// Calculate current streak (consecutive days habit was completed)
 function calculateCurrentStreak(habit) {
     if (!habit || !habit.history) return 0;
     
     let streak = 0;
     const today = new Date();
-    let currentDate = new Date(today);
+    today.setHours(0, 0, 0, 0); // Normalize to midnight
     
-    // Check today first
-    if (habit.history[formatDate(currentDate)]) {
-        streak = 1;
+    // Check today and previous days
+    for (let i = 0; i < 30; i++) {
+        const currentDate = new Date();
+        currentDate.setDate(today.getDate() - i);
+        currentDate.setHours(0, 0, 0, 0);
         
-        // Check previous days
-        let daysBefore = 1;
-        while (true) {
-            currentDate = new Date(today);
-            currentDate.setDate(today.getDate() - daysBefore);
-            const dateString = formatDate(currentDate);
-            
-            if (habit.history[dateString]) {
-                streak++;
-                daysBefore++;
-            } else {
-                break;
-            }
+        const dateString = formatDate(currentDate);
+        
+        if (habit.history[dateString]) {
+            streak++;
+        } else {
+            break;
         }
     }
     
@@ -2098,7 +2260,7 @@ function ensureAddHabitButtonsWork() {
     const emptyAddBtn = document.getElementById('empty-add-btn');
     if (emptyAddBtn) {
         // Remove any existing listeners to prevent duplicates
-        const newEmptyAddBtn = emptyAddBtn.cloneNode(true);
+        const newEmptyAddBtn = emptyAddBtn.cloneNode(true); // This variable was missing or incorrectly referenced
         emptyAddBtn.parentNode.replaceChild(newEmptyAddBtn, emptyAddBtn);
         newEmptyAddBtn.addEventListener('click', showQuickAddModal);
         console.log("Empty add button listener attached");
@@ -2125,7 +2287,7 @@ function ensureAddHabitButtonsWork() {
 // Add this function after setupDashboardPage
 
 function setupResponsiveLayout() {
-    console.log("Setting up responsive layout handlers");
+    console.log("Setting up responsive handlers");
     
     // Check if we're on mobile
     const isMobile = window.innerWidth < 768;
@@ -2356,3 +2518,237 @@ function updateMobileNavState() {
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         });
     }
+
+function populateCategoryDropdown() {
+    console.log("Populating category dropdown");
+    const categorySelect = document.getElementById('habit-category');
+    
+    // If we're on the manage page and the dropdown isn't found,
+    // it might be in a modal that hasn't been created yet - that's ok
+    if (!categorySelect) {
+        console.log("Category dropdown not found - might be in uncreated modal");
+        return;
+    }
+    
+    // Clear existing options except the empty default one
+    while (categorySelect.options.length > 1) {
+        categorySelect.remove(1);
+    }
+    
+    // Add all categories from appData
+    appData.categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        option.style.backgroundColor = category.color + '20'; // Light background color
+        categorySelect.appendChild(option);
+    });
+    
+    console.log(`Added ${appData.categories.length} categories to dropdown`);
+}
+
+// Edit a habit
+function editHabit(habitId) {
+    const habit = appData.habits.find(h => h.id === habitId);
+    if (!habit) return;
+    
+    // Show edit modal
+    let editModal = document.getElementById('edit-habit-modal');
+    
+    if (!editModal) {
+        // Create the modal if it doesn't exist
+        editModal = document.createElement('div');
+        editModal.id = 'edit-habit-modal';
+        editModal.className = 'modal';
+        
+        editModal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Habit</h3>
+                    <button class="btn-close">
+                        <span class="material-icons-round">close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-habit-form">
+                        <div class="form-group">
+                            <label for="edit-habit-name">Habit Name</label>
+                            <input type="text" id="edit-habit-name" class="form-control" placeholder="Habit name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-habit-category">Category</label>
+                            <select id="edit-habit-category" class="form-control">
+                                <option value="">No Category</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Track on Days</label>
+                            <div class="weekday-selector">
+                                <button type="button" class="weekday-btn" data-day="0">S</button>
+                                <button type="button" class="weekday-btn" data-day="1">M</button>
+                                <button type="button" class="weekday-btn" data-day="2">T</button>
+                                <button type="button" class="weekday-btn" data-day="3">W</button>
+                                <button type="button" class="weekday-btn" data-day="4">T</button>
+                                <button type="button" class="weekday-btn" data-day="5">F</button>
+                                <button type="button" class="weekday-btn" data-day="6">S</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+                    <button class="btn btn-primary" id="edit-save-btn">Save Changes</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(editModal);
+    }
+    
+    // Show the modal
+    editModal.classList.add('show');
+    
+    // Set up the form with the habit's data
+    const nameInput = document.getElementById('edit-habit-name');
+    const categorySelect = document.getElementById('edit-habit-category');
+    const weekdayButtons = editModal.querySelectorAll('.weekday-btn');
+    const saveBtn = document.getElementById('edit-save-btn');
+    const cancelBtn = document.getElementById('edit-cancel-btn');
+    const closeBtn = editModal.querySelector('.btn-close');
+    
+    // Fill in the form fields
+    if (nameInput) {
+        nameInput.value = habit.name;
+    }
+    
+    // Set up the category dropdown
+    if (categorySelect) {
+        // Clear existing options except the first one
+        while (categorySelect.options.length > 1) {
+            categorySelect.remove(1);
+        }
+        
+        // Add all categories
+        appData.categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+        
+        // Select the current category
+        categorySelect.value = habit.category || '';
+    }
+    
+    // Set up the weekday buttons
+    if (weekdayButtons && habit.trackDays) {
+        weekdayButtons.forEach(btn => {
+            const day = parseInt(btn.getAttribute('data-day'));
+            if (habit.trackDays.includes(day)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            
+            // Add click event listeners
+            btn.onclick = function() {
+                this.classList.toggle('active');
+            };
+        });
+    }
+    
+    // Set up the close button
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            editModal.classList.remove('show');
+        };
+    }
+    
+    // Set up the cancel button
+    if (cancelBtn) {
+        cancelBtn.onclick = function() {
+            editModal.classList.remove('show');
+        };
+    }
+    
+    // Set up the save button
+    if (saveBtn) {
+        saveBtn.onclick = function() {
+            // Get the values from the form
+            const newName = nameInput ? nameInput.value.trim() : habit.name;
+            const newCategory = categorySelect ? categorySelect.value : habit.category;
+            
+            // Validate the form
+            if (!newName) {
+                showToast('Please enter a habit name', 'warning');
+                return;
+            }
+            
+            // Get selected weekdays
+            const newTrackDays = [];
+            if (weekdayButtons) {
+                weekdayButtons.forEach(btn => {
+                    if (btn.classList.contains('active')) {
+                        const day = parseInt(btn.getAttribute('data-day'));
+                        newTrackDays.push(day);
+                    }
+                });
+            }
+            
+            // Update the habit
+            habit.name = newName;
+            habit.category = newCategory;
+            habit.trackDays = newTrackDays.length > 0 ? newTrackDays : habit.trackDays;
+            
+            // Save changes
+            saveToLocalStorage();
+            
+            // Close the modal
+            editModal.classList.remove('show');
+            
+            // Re-render the habits list
+            renderManageHabitsList();
+            
+            // Show success message
+            showToast('Habit updated successfully', 'success');
+        };
+    }
+}
+
+// Function to delete a habit - fix implementation
+function deleteHabit(habitId) {
+    console.log("Deleting habit with ID:", habitId);
+    
+    try {
+        // Find the habit to get its name for the confirmation message
+        const habitToDelete = appData.habits.find(h => h.id === habitId);
+        if (!habitToDelete) {
+            console.error("Could not find habit with ID:", habitId);
+            showToast('Error: Habit not found', 'error');
+            return;
+        }
+        
+        const habitName = habitToDelete.name;
+        console.log(`Found habit "${habitName}" to delete`);
+        
+        // Filter out the habit with the matching ID
+        appData.habits = appData.habits.filter(habit => habit.id !== habitId);
+        console.log(`Removed habit from array, new length: ${appData.habits.length}`);
+        
+        // Save changes to localStorage
+        saveToLocalStorage();
+        console.log("Saved changes to localStorage");
+        
+        // Re-render the habits list
+        renderManageHabitsList();
+        console.log("Re-rendered habits list");
+        
+        // Show success message
+        showToast(`Habit "${habitName}" has been deleted`, 'success');
+    } catch (error) {
+        console.error("Error deleting habit:", error);
+        showToast("Failed to delete habit. Please try again.", "error");
+    }
+}
