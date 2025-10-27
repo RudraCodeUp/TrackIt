@@ -1637,13 +1637,85 @@ function setupAnalyticsPage() {
     // Add event listeners for chart type toggles
     setupChartTypeToggles();
     
+    
     // Setup print button
     const printButton = document.getElementById('print-analytics');
     if (printButton) {
         printButton.addEventListener('click', printAnalyticsReport);
     }
 }
+// ...existing code...
 
+// Setup chart type toggles for weekly and monthly charts
+function setupChartTypeToggles() {
+    const cards = document.querySelectorAll('.chart-card');
+    if (!cards.length) return;
+
+    const mapIconToType = (iconOrTitle) => {
+        const t = (iconOrTitle || '').toLowerCase().trim();
+        if (t.includes('pie') || t === 'pie_chart') return 'pie_chart';
+        if (t.includes('bar') || t === 'bar_chart') return 'bar_chart';
+        if (t.includes('area') || t === 'stacked_line_chart') return 'stacked_line_chart';
+        // default line
+        return 'show_chart';
+    };
+
+    cards.forEach(card => {
+        const options = card.querySelector('.chart-options');
+        const container = card.querySelector('.chart-container');
+        if (!options || !container) return;
+
+        // Set data attributes on buttons so resize logic can read them
+        const isWeekly = container.id === 'weekly-chart';
+        const isMonthly = container.id === 'monthly-chart';
+        options.querySelectorAll('.btn-icon').forEach(btn => {
+            const icon = btn.querySelector('.material-icons-round');
+            const iconName = icon ? icon.textContent.trim() : '';
+            const title = btn.getAttribute('title') || '';
+            const type = mapIconToType(iconName || title);
+
+            btn.dataset.chart = isWeekly ? 'weekly' : (isMonthly ? 'monthly' : '');
+            btn.dataset.type = type;
+        });
+
+        // Prevent duplicate bindings
+        if (options.dataset.bound === '1') return;
+        options.dataset.bound = '1';
+
+        options.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-icon');
+            if (!btn || !options.contains(btn)) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Toggle active within this card only
+            options.querySelectorAll('.btn-icon').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const type = btn.dataset.type || mapIconToType(btn.querySelector('.material-icons-round')?.textContent);
+            if (isWeekly && typeof renderWeeklyChart === 'function') {
+                renderWeeklyChart(type === 'pie_chart' ? 'pie_chart' : 'bar_chart');
+            } else if (isMonthly && typeof renderMonthlyChart === 'function') {
+                renderMonthlyChart(type === 'stacked_line_chart' ? 'stacked_line_chart' : 'show_chart');
+            }
+        });
+
+        // Ensure initial active reflects its type
+        const initiallyActive = options.querySelector('.btn-icon.active') || options.querySelector('.btn-icon');
+        if (initiallyActive) {
+            const type = initiallyActive.dataset.type || mapIconToType(initiallyActive.querySelector('.material-icons-round')?.textContent);
+            initiallyActive.classList.add('active');
+            if (isWeekly && typeof renderWeeklyChart === 'function') {
+                renderWeeklyChart(type === 'pie_chart' ? 'pie_chart' : 'bar_chart');
+            } else if (isMonthly && typeof renderMonthlyChart === 'function') {
+                renderMonthlyChart(type === 'stacked_line_chart' ? 'stacked_line_chart' : 'show_chart');
+            }
+        }
+    });
+}
+
+// ...existing code...
 function renderAnalytics() {
     // Update summary statistics
     updateAnalyticsSummary();
@@ -1876,7 +1948,10 @@ function renderMonthlyChart(chartType = 'show_chart') {
         container.appendChild(emptyState);
         return;
     }
-    
+    const width = container.clientWidth || container.offsetWidth || 600;
+    let height = container.clientHeight || container.offsetHeight || 0;
+    if (!height || height < 160) height = 260;
+
     // Create canvas for drawing
     const canvas = document.createElement('canvas');
     canvas.id = 'monthly-canvas';
@@ -2239,6 +2314,15 @@ function getLastSevenDays() {
         dates.push(formatDate(date));
     }
     return dates;
+}
+function printAnalyticsReport() {
+    window.print();
+}
+function updateMotivationalQuote() {
+    const el = domElements.motivationQuote || document.getElementById('motivation-quote');
+    if (el) {
+        el.textContent = 'Small steps every day add up. Keep going!';
+    }
 }
 
 // Add this function to directly attach event listeners to all add habit buttons
