@@ -1734,13 +1734,13 @@ function updateAnalyticsSummary() {
     
     // Calculate best streak
     let bestStreak = 0;
-    let bestHabit = null;
+    let bestHabitName = null;
     
     appData.habits.forEach(habit => {
-        const streak = calculateStreak(habit);
-        if (streak > bestStreak) {
-            bestStreak = streak;
-            bestHabit = habit;
+        const maxStreak = calculateStreak(habit);
+        if (maxStreak > bestStreak) {
+            bestStreak = maxStreak;
+            bestHabitName = habit.name;
         }
     });
     
@@ -1768,7 +1768,7 @@ function updateAnalyticsSummary() {
         domElements.completionRateElement.textContent = completionRate + '%';
     }
     
-    // Find most consistent habit
+    // Find MOST CONSISTENT HABIT (highest completion rate over last 30 days)
     let mostConsistentHabit = null;
     let highestCompletionRate = 0;
     
@@ -1790,6 +1790,16 @@ function updateAnalyticsSummary() {
             mostConsistentHabit = habit;
         }
     });
+    
+    // Display most consistent habit
+     if (domElements.mostConsistentElement) {
+        if (mostConsistentHabit) {
+            const percentage = Math.round(highestCompletionRate * 100);
+            domElements.mostConsistentElement.textContent = `${mostConsistentHabit.name} (${percentage}%)`;
+        } else {
+            domElements.mostConsistentElement.textContent = 'No data yet';
+        }
+    }
     
     // Update most active day
     const dayCount = [0, 0, 0, 0, 0, 0, 0]; // Sun, Mon, Tue, Wed, Thu, Fri, Sat
