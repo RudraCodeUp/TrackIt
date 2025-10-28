@@ -59,17 +59,16 @@ function initApp() {
         });
     }
     
-    // Set up mobile menu toggle - replace the existing code in initApp
+    // Set up mobile menu toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const navbarMenu = document.getElementById('navbar-menu');
     if (mobileMenuToggle && navbarMenu) {
         console.log("Setting up mobile menu toggle");
         
-        // Remove any existing listeners to prevent duplicates
         const newMobileMenuToggle = mobileMenuToggle.cloneNode(true);
         mobileMenuToggle.parentNode.replaceChild(newMobileMenuToggle, mobileMenuToggle);
         
-        // Add click listener
+        // click listener
         newMobileMenuToggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -77,7 +76,7 @@ function initApp() {
             toggleMobileMenu();
         });
         
-        // Add touchstart for better mobile response
+        // touchstart for better mobile response
         newMobileMenuToggle.addEventListener('touchstart', function(e) {
             e.preventDefault();
             toggleMobileMenu();
@@ -95,7 +94,7 @@ function initApp() {
         addExampleHabits();
     }
     
-    // Make sure add habit buttons work
+    
     ensureAddHabitButtonsWork();
 }
 
@@ -892,7 +891,6 @@ function setupQuickAddModal() {
     
 }
 
-// Replace the showQuickAddModal function with this enhanced version
 
 function showQuickAddModal() {
     console.log("Showing quick add modal");
@@ -952,7 +950,7 @@ function hideQuickAddModal() {
     }
 }
 
-// Replace the addNewHabit function with this enhanced version
+
 
 function addNewHabit() {
     console.log("Adding new habit");
@@ -1047,7 +1045,7 @@ function setupConfirmationModal() {
     }
 }
 
-// Fix for the confirmation modal to ensure the callback is executed properly
+
 function showConfirmationModal(title, message, confirmCallback) {
     // Create a new modal each time to avoid event handling issues
     let existingModal = document.getElementById('confirmation-modal');
@@ -1099,7 +1097,7 @@ function showConfirmationModal(title, message, confirmCallback) {
     });
 }
 
-// Add this function to fix the settings page functionality
+
 
 function setupSettingsPage() {
     console.log("Setting up settings page");
@@ -1374,7 +1372,7 @@ function deleteCategory(categoryId) {
             }
         );
     } else {
-        // Simple delete without confirmation if no habits use this category
+        // No habits use this category, safe to delete
         appData.categories = appData.categories.filter(cat => cat.id !== categoryId);
         saveToLocalStorage();
         renderCategoriesList();
@@ -1382,8 +1380,7 @@ function deleteCategory(categoryId) {
     }
 }
 
-// Update renderManageHabitsList to include proper data-label attributes for mobile display
-// filepath: e:\TrackIt\TrackIt\script.js
+
 function renderManageHabitsList() {
     console.log("Rendering manage habits list");
     
@@ -1644,7 +1641,7 @@ function setupAnalyticsPage() {
         printButton.addEventListener('click', printAnalyticsReport);
     }
 }
-// ...existing code...
+
 
 // Setup chart type toggles for weekly and monthly charts
 function setupChartTypeToggles() {
@@ -1715,7 +1712,6 @@ function setupChartTypeToggles() {
     });
 }
 
-// ...existing code...
 function renderAnalytics() {
     // Update summary statistics
     updateAnalyticsSummary();
@@ -2122,8 +2118,7 @@ function drawLineChart(ctx, width, height, data) {
 }
 
 function drawStackedAreaChart(ctx, width, height, data) {
-    // Similar to line chart but with different styling to appear as a stacked area chart
-    // Clear canvas
+    
     ctx.clearRect(0, 0, width, height);
     
     const padding = 30;
@@ -2325,7 +2320,6 @@ function updateMotivationalQuote() {
     }
 }
 
-// Add this function to directly attach event listeners to all add habit buttons
 
 function ensureAddHabitButtonsWork() {
     console.log("Ensuring add habit buttons work");
@@ -2343,8 +2337,8 @@ function ensureAddHabitButtonsWork() {
     // Empty state add button
     const emptyAddBtn = document.getElementById('empty-add-btn');
     if (emptyAddBtn) {
-        // Remove any existing listeners to prevent duplicates
-        const newEmptyAddBtn = emptyAddBtn.cloneNode(true); // This variable was missing or incorrectly referenced
+
+        const newEmptyAddBtn = emptyAddBtn.cloneNode(true);
         emptyAddBtn.parentNode.replaceChild(newEmptyAddBtn, emptyAddBtn);
         newEmptyAddBtn.addEventListener('click', showQuickAddModal);
         console.log("Empty add button listener attached");
@@ -2353,7 +2347,7 @@ function ensureAddHabitButtonsWork() {
     // Add habit button on manage page
     const addHabitButton = document.getElementById('add-habit-btn');
     if (addHabitButton) {
-        // Remove any existing listeners to prevent duplicates
+        
         const newAddHabitButton = addHabitButton.cloneNode(true);
         addHabitButton.parentNode.replaceChild(newAddHabitButton, addHabitButton);
         newAddHabitButton.addEventListener('click', () => {
@@ -2368,7 +2362,6 @@ function ensureAddHabitButtonsWork() {
     }
 }
 
-// Add this function after setupDashboardPage
 
 function setupResponsiveLayout() {
     console.log("Setting up responsive handlers");
@@ -2442,7 +2435,6 @@ function setupResponsiveLayout() {
     });
 }
 
-// Add this function to your code
 
 function enhanceMobileInteractions() {
     console.log("Setting up mobile touch interactions");
@@ -2513,10 +2505,9 @@ function initMobileNavbar() {
     navbarMenu.style.transform = '';
     navbarMenu.classList.remove('mobile-active');
     
-    // Force correct initial state based on viewport width
     updateMobileNavState();
     
-    // Ensure toggle button has correct event listeners
+  
     const newMobileToggle = mobileToggle.cloneNode(true);
     mobileToggle.parentNode.replaceChild(newMobileToggle, mobileToggle);
     
@@ -2549,7 +2540,6 @@ function initMobileNavbar() {
     window.addEventListener('resize', updateMobileNavState);
 }
 
-// Enhanced function to properly handle responsive state transitions
 function updateMobileNavState() {
     const navbarMenu = document.getElementById('navbar-menu');
     const isMobile = window.innerWidth < 768;
@@ -2557,7 +2547,9 @@ function updateMobileNavState() {
     if (!navbarMenu) return;
     
     if (isMobile) {
-        // On mobile: make sure the menu is initially hidden unless active
+        // On mobile, maintain current state but ensure proper classes/styles
+        
+        // If menu is not active, hide it
         if (!navbarMenu.classList.contains('mobile-active')) {
             navbarMenu.style.display = 'none';
         }
@@ -2566,13 +2558,11 @@ function updateMobileNavState() {
         document.body.classList.add('mobile-view');
         navbarMenu.classList.add('mobile-menu');
     } else {
-        // IMPORTANT: On desktop, ALWAYS reset to desktop state regardless of previous state
         
         // Remove all mobile-specific classes
         document.body.classList.remove('mobile-view');
         navbarMenu.classList.remove('mobile-menu', 'mobile-active');
         
-        // Reset ALL inline styles that were applied during mobile animations
         navbarMenu.style.display = '';
         navbarMenu.style.opacity = '';
         navbarMenu.style.transform = '';
@@ -2582,9 +2572,6 @@ function updateMobileNavState() {
     // Debug logging
     console.log(`Screen width: ${window.innerWidth}, Mobile view: ${isMobile}`);
 }
-
-// Call this function in your initApp function, after the existing mobile menu setup
-// Add these lines at the end of your initApp function
 
     // Initialize mobile navbar with enhanced responsiveness
     initMobileNavbar();
@@ -2607,19 +2594,15 @@ function populateCategoryDropdown() {
     console.log("Populating category dropdown");
     const categorySelect = document.getElementById('habit-category');
     
-    // If we're on the manage page and the dropdown isn't found,
-    // it might be in a modal that hasn't been created yet - that's ok
     if (!categorySelect) {
         console.log("Category dropdown not found - might be in uncreated modal");
         return;
     }
     
-    // Clear existing options except the empty default one
     while (categorySelect.options.length > 1) {
         categorySelect.remove(1);
     }
-    
-    // Add all categories from appData
+ 
     appData.categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category.id;
@@ -2801,7 +2784,7 @@ function editHabit(habitId) {
     }
 }
 
-// Function to delete a habit - fix implementation
+// Function to delete a habit
 function deleteHabit(habitId) {
     console.log("Deleting habit with ID:", habitId);
     

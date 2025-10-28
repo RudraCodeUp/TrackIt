@@ -143,35 +143,7 @@ img {
   transition: opacity var(--transition-normal);
 }
 
-.sidebar.collapsed .logo h1 {
-  opacity: 0;
-  width: 0;
-}
 
-.sidebar-toggle {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--border-radius-md);
-  transition: background-color var(--transition-fast);
-}
-
-.sidebar-toggle:hover {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
-}
-
-.sidebar-menu {
-  flex: 1;
-  padding: 20px 0;
-  overflow-y: auto;
-}
 
 .menu-item {
   display: flex;
@@ -216,29 +188,7 @@ img {
   transition: opacity var(--transition-normal);
 }
 
-.sidebar.collapsed .menu-text {
-  opacity: 0;
-  width: 0;
-}
-
-.sidebar.collapsed .menu-item {
-  padding: 16px 0;
-  justify-content: center;
-}
-
-.sidebar.collapsed .menu-item span.material-icons-round {
-  margin-right: 0;
-  font-size: 1.5rem;
-}
-
-.sidebar-footer {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
+/* Theme Switcher dark mode light mode */
 .theme-switch-wrapper {
   display: flex;
   align-items: center;
@@ -404,14 +354,13 @@ input:checked + .slider:before {
   color: var(--text-primary);
 }
 
-/* Reset layout for top navbar */
 
 /* Hide the old sidebar completely */
 .sidebar {
   display: none !important;
 }
 
-/* Fix app container for top navbar */
+/* Fixed app container for top navbar */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -427,7 +376,7 @@ input:checked + .slider:before {
   padding: var(--space-6);
   width: 100%;
   max-width: 100%;
-  transition: none; /* Remove any margin transitions */
+  transition: none; 
   overflow-y: auto;
   flex: 1;
 }
@@ -447,7 +396,7 @@ input:checked + .slider:before {
   z-index: 100;
 }
 
-/* Make sure content sections use full width */
+/* content sections use full width */
 .dashboard-stats, 
 .habits-container,
 .main-header,
@@ -467,7 +416,7 @@ input:checked + .slider:before {
   }
 }
 
-/* Fix for layout with top navbar */
+
 
 /* Reset app container for top navbar */
 .app-container {
@@ -484,8 +433,8 @@ input:checked + .slider:before {
   width: 100%;
   padding: var(--space-6);
   overflow-y: auto;
-  margin-left: 0; /* Remove any left margin from sidebar layout */
-  transition: none; /* Remove transition from sidebar layout */
+  margin-left: 0; 
+  transition: none; 
 }
 
 /* Hide the sidebar completely */
@@ -522,7 +471,7 @@ input:checked + .slider:before {
   }
 }
 
-/* Add this to ensure that forms and modals are centered */
+/*forms and modals are centered */
 .form-group, .modal-content {
   max-width: 100%;
 }
@@ -865,139 +814,346 @@ input:checked + .slider:before {
   gap: 16px;
 }
 
+/* Habit Card Styling  */
 .habit-card {
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--border-color);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--bg-primary);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .habit-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-.habit-card-header {
-  margin-bottom: 16px;
+.habit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-hover));
 }
 
-.habit-category-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  color: white;
-  margin-bottom: 8px;
+/* Habit Header */
+.habit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
+/* Highlighted Habit Title */
 .habit-name {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
+    margin: 0 0 16px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--primary-light), rgba(85, 112, 241, 0.05));
+    border-radius: 12px;
+    border-left: 4px solid var(--primary);
+    position: relative;
+    overflow: hidden;
 }
 
-.habit-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.habit-name::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+    pointer-events: none;
 }
 
-.habit-completion {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Category Badge */
+.habit-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
-.checkbox-container {
-  display: flex;
-  align-items: center;
+.habit-category-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
 }
 
-.custom-checkbox {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--primary);
-  border-radius: 6px;
-  margin-right: 8px;
-  cursor: pointer;
-  position: relative;
-  transition: background-color 0.2s ease;
+.habit-category-badge:hover::before {
+    left: 100%;
 }
 
-.custom-checkbox:checked {
-  background-color: var(--primary);
+/* Custom Checkbox */
+.today-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.custom-checkbox:checked::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 7px;
-  width: 6px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+.today-checkbox input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    background: var(--bg-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.streak-container {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.today-checkbox input[type="checkbox"]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(85, 112, 241, 0.2);
+}
+
+.today-checkbox input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(85, 112, 241, 0.3);
+}
+
+.today-checkbox input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 7px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    animation: checkmark 0.3s ease-in-out;
+}
+/* Checkmark Animation */
+@keyframes checkmark {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: rotate(45deg) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(45deg) scale(1);
+    }
+}
+
+.today-checkbox label {
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin: 0;
+    transition: color 0.2s ease;
+}
+
+.today-checkbox input[type="checkbox"]:checked + label {
+    color: var(--primary);
+}
+
+/* Streak Counter */
+.habit-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(85, 112, 241, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(85, 112, 241, 0.1);
 }
 
 .streak-count {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-shadow: 0 2px 4px rgba(85, 112, 241, 0.2);
 }
 
 .streak-label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
+/* Week Tracker */
 .week-tracker {
-  margin-top: 8px;
+    margin-top: 16px;
 }
 
+.streak-container .streak-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/*Day Dots with Background Stripes */
 .day-dots {
-  display: flex;
-  justify-content: space-between;
-  gap: 4px;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
 }
 
 .day-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--bg-tertiary);
-  position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-color);
+    
+    /* Diagonal stripe background for empty dots */
+    background: repeating-linear-gradient(
+        45deg,
+        var(--bg-secondary, #f1f5f9),
+        var(--bg-secondary, #f1f5f9) 2px,
+        var(--bg-tertiary, #e2e8f0) 2px,
+        var(--bg-tertiary, #e2e8f0) 4px
+    );
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .day-dot.completed {
-  background-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(85, 112, 241, 0.2);
+    transform: scale(1.1);
 }
 
+.day-dot:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.day-dot.completed:hover {
+    box-shadow: 0 0 0 4px rgba(85, 112, 241, 0.3);
+    transform: scale(1.2);
+}
+
+/* Dark theme support for stripes */
+.dark-theme .day-dot {
+    background: repeating-linear-gradient(
+        45deg,
+        #1e293b,
+        #1e293b 2px,
+        #334155 2px,
+        #334155 4px
+    );
+    border-color: #475569;
+}
+
+.dark-theme .day-dot.completed {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-color: var(--primary);
+}
+
+/* tooltips for day dots */
+.day-dot::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--dark);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.day-dot::after {
+    content: '';
+    position: absolute;
+    bottom: 19px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: var(--dark) transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.day-dot:hover::before,
 .day-dot:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .habit-card {
+        padding: 16px;
+    }
+    
+    .habit-name {
+        font-size: 1.1rem;
+        padding: 10px 14px;
+    }
+    
+    .day-dot {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .streak-count {
+        font-size: 1.75rem;
+    }
+}
+
+/* Animation for new cards */
+.habit-card.fade-in {
+    animation: slideInUp 0.5s ease forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Empty State */
@@ -1564,9 +1720,9 @@ blockquote {
   100% { transform: rotate(360deg); }
 }
 
-/* Professional styling for Manage page */
+/* Styling for Manage page */
 
-/* Search bar with improved styling */
+/* Search bar styling */
 .search-container {
   margin-bottom: 24px;
 }
@@ -1637,7 +1793,7 @@ blockquote {
   color: var(--text-primary);
 }
 
-/* Habits list with improved spacing */
+/* Habits list with spacing */
 .habits-list {
   padding: 16px 24px;
 }
@@ -1887,7 +2043,7 @@ blockquote {
     font-style: italic;
 }
 
-/* Add these to your CSS file */
+/* mobile view */
 @media (max-width: 767px) {
     #navbar-menu {
         position: absolute;
@@ -1925,7 +2081,6 @@ blockquote {
     }
 }
 
-/* Make sure the mobile toggle button is visible only on mobile */
 .mobile-menu-toggle {
     display: none;
 }
@@ -1936,12 +2091,12 @@ blockquote {
     }
 }
 
-/* Add touch feedback for navbar items */
+/* touch feedback for navbar items */
 .mobile-menu a:active,
 .mobile-menu a:focus {
     background-color: var(--bg-secondary);
 }
-/* Beautiful Responsive Table Styling */
+/* Table Styling for habits management [page] */
 .habits-table {
   width: 100%;
   border-collapse: separate;
@@ -2206,9 +2361,9 @@ blockquote {
     transform: translateY(0);
   }
 }
+
 /* Fix for iOS devices */
 .ios-device .mobile-menu {
-    /* Use the custom vh variable if needed */
     max-height: calc(var(--vh, 1vh) * 100 - 60px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
