@@ -356,6 +356,74 @@ function toggleMobileMenu() {
     }
 }
 
+
+// Toast notification function
+function showToast(message, type = 'info', duration = 3000) {
+    console.log(`Showing toast: ${message} (${type})`);
+    
+    // Get or create toast container
+    let toastContainer = document.getElementById('toast-container');
+    
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    // Determine icon based on type
+    let icon = '';
+    switch (type) {
+        case 'success':
+            icon = 'check_circle';
+            break;
+        case 'error':
+            icon = 'error';
+            break;
+        case 'warning':
+            icon = 'warning';
+            break;
+        case 'info':
+        default:
+            icon = 'info';
+            break;
+    }
+    
+    // Set toast content
+    toast.innerHTML = `
+        <span class="toast-icon material-icons-round">${icon}</span>
+        <span class="toast-content">${message}</span>
+    `;
+    
+    // Add toast to container
+    toastContainer.appendChild(toast);
+    
+    // Trigger animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    // Remove toast after duration
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        
+        // Remove from DOM after animation completes
+        setTimeout(() => {
+            toast.remove();
+            
+            // Remove container if no more toasts
+            if (toastContainer.children.length === 0) {
+                toastContainer.remove();
+            }
+        }, 300);
+    }, duration);
+}
+
 // ===== DATA MANAGEMENT =====
 
 function loadFromLocalStorage() {
